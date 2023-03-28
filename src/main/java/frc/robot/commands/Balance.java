@@ -30,7 +30,7 @@ public class Balance extends CommandBase {
     this.swerve.drive(new Translation2d(power, 0), 0, true, true, true, true);
 
     if (isBalanced()) {
-      leds.set(Constants.LEDConstants.raindbow);
+      leds.set(Constants.LEDConstants.rainbow);
     } else {
       leds.set(Constants.LEDConstants.skyblue);
     }

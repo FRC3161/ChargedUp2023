@@ -272,6 +272,6 @@ public final class Constants {
     public static final double solidOrange = 0.65;
     public static final double skyblue = 0.83;
     public static final double off = 0.99;
-    public static final double raindbow = -0.99;
+    public static final double rainbow = -0.99;
   }
 }
