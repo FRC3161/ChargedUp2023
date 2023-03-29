@@ -1,26 +1,19 @@
 package frc.robot.autos;
 
 import java.util.HashMap;
-import java.util.List;
-
-import org.photonvision.PhotonCamera;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.PieceType;
 import frc.robot.commands.IntakeIn;
-import frc.robot.commands.presets.ConeL2Score;
 import frc.robot.commands.presets.ConeL3Score;
 import frc.robot.commands.presets.ConeStanding;
-import frc.robot.commands.presets.ConeTipped;
 import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.LEDs;
@@ -47,7 +40,7 @@ public class FarsideConeL3 extends AutoBase {
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
         new PathConstraints(0.5, 0.5));
 
-    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap = new HashMap<>();
     eventMap.put("conestanding", new ConeStanding(arm, wrist, leds));
     eventMap.put("intakea", new IntakeIn(arm, wrist, PieceType.CONE, leds));
 

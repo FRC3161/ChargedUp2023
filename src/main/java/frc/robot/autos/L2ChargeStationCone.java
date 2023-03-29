@@ -1,24 +1,18 @@
 package frc.robot.autos;
 
 import java.util.HashMap;
-import java.util.List;
-
-import org.photonvision.PhotonCamera;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Balance;
 import frc.robot.commands.presets.ConeL2;
 import frc.robot.commands.presets.ConeL2Score;
-import frc.robot.commands.presets.ConeTipped;
 import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.LEDs;
@@ -49,7 +43,7 @@ public class L2ChargeStationCone extends AutoBase {
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
         new PathConstraints(5, 5));
 
-    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap = new HashMap<>();
     eventMap.put("conel2score", new ConeL2Score(arm, wrist, leds));
 
     autoBuilder = new SwerveAutoBuilder(poseEstimator::currentPose,

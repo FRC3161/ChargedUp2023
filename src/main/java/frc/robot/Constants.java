@@ -8,7 +8,6 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -45,10 +44,15 @@ public final class Constants {
   public static final RobotModes robotMode = RobotModes.Debug;
 
   public static final class Vision {
-    public static final String cameraName = "OV5647";
+    public static final String rightCameraName = "OV5647";
+    public static final String leftCameraName = "OV5647left";
     public static final Transform3d cameraToRobot = new Transform3d(
         new Translation3d(-0.22, 0.35, 0),
         new Rotation3d(0, Units.degreesToRadians(0), 0));
+    public static final Transform3d leftCameraToRobot = new Transform3d(
+        new Translation3d(-0.22, -0.35, 0),
+        new Rotation3d(0, Units.degreesToRadians(0), 0));
+
     public static final Transform3d robotToCamera = cameraToRobot.inverse();
     public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
@@ -188,6 +192,7 @@ public final class Constants {
     public static final String[] moduleNames = { "Front Left", "Front Right", "Back Left", "Back Right" }; // module #0,
     // #1, #2, #3
 
+    public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
     public static final PIDConstants drivePID = new PIDConstants(0.1, 0.00, 0.000);
 
     /* Front Left Module - Module 0 */
@@ -198,7 +203,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio"; // change to "rio" if it's on rio
       public static final double angleOffset = 22.5;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -211,7 +215,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 237.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -224,7 +227,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 181.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -237,14 +239,13 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 52.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 4;
+    public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 4;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 2;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -283,6 +284,6 @@ public final class Constants {
     public static final double lawnGreen = 0.71;
     public static final double lime = 0.73;
     public static final double darkGreen = 0.75;
-    public static final double green = 0.77; 
+    public static final double green = 0.77;
   }
 }

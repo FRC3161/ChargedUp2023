@@ -6,18 +6,14 @@ package frc.robot;
 
 import java.util.Hashtable;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,10 +62,11 @@ public class RobotContainer {
   /* Subsystems */
   final Swerve s_Swerve = new Swerve();
   final Wrist wrist = new Wrist();
-  final PhotonCamera camera = new PhotonCamera(Constants.Vision.cameraName);
+  final PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCameraName);
+  final PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCameraName);
   final Arm arm = new Arm();
   final LEDs leds = new LEDs();
-  public final PoseEstimator poseEstimator = new PoseEstimator(s_Swerve, camera);
+  public final PoseEstimator poseEstimator = new PoseEstimator(s_Swerve, rightCamera, leftCamera);
 
   /* Auto */
   Hashtable<String, AutoBase> autoCommands = new Hashtable<String, AutoBase>();
@@ -226,10 +223,10 @@ public class RobotContainer {
             FieldConstants.aprilTags.get(1).getY(), 0), new Rotation3d(0, 3.142, 0))));
 
     driver.povUp().toggleOnTrue(new DriveAt4(s_Swerve));
-    SmartDashboard.putData("set yaw", new InstantCommand(() -> {
-      double yaw = SmartDashboard.getNumber("set yaw position", 0);
-      s_Swerve.gyro.setYaw(yaw);
+    SmartDashboard.putData("send values", new InstantCommand(() -> {
+      s_Swerve.retrieveAutoConstants();
     }));
+
   }
 
   public void sendAutoCommands() {
@@ -267,6 +264,6 @@ public class RobotContainer {
       return new DefaultAuto(arm, wrist, leds).getCommand();
     }
 
-    return this.autoCommands.get(selectedAuto).getCommand();
+    return this.autoCommands.get(selectedAuto).updateAutoBuilder().getCommand();
   }
 }
