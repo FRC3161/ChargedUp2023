@@ -18,12 +18,21 @@ public class IntakeIn extends CommandBase {
   private int counter = 0;
   private LEDs leds;
   private boolean hasSeen = false;
+  private boolean delayedCommand = false;
 
   public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, LEDs leds) {
     this.arm = arm;
     this.wrist = wrist;
     this.gamePieceType = gamePiece;
     this.leds = leds;
+  }
+
+  public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, LEDs leds, boolean delay) {
+    this.arm = arm;
+    this.wrist = wrist;
+    this.gamePieceType = gamePiece;
+    this.leds = leds;
+    this.delayedCommand = delay;
   }
 
   public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, boolean auto) {
@@ -61,12 +70,28 @@ public class IntakeIn extends CommandBase {
     this.leds.set(Constants.LEDConstants.solidRed);
     if (this.hasSeen) {
       counter++;
-      if (counter > 10) {
-        this.leds.set(Constants.LEDConstants.solidGreen);
-        Rest.forceSet(arm, wrist);
-        return true;
+      if (this.delayedCommand) { // Use delay for Cube HP
+        //
+        if (counter > 10){
+          this.leds.set(Constants.LEDConstants.solidGreen);
+          this.wrist.intakeStop();
+        }
+        if (counter > 30) {
+          
+          Rest.forceSet(arm, wrist);
+          return true; 
+
+        }
+        return false;
+        //
+      } else {
+        if (counter > 10) {
+          this.leds.set(Constants.LEDConstants.solidGreen);
+          Rest.forceSet(arm, wrist);
+          return true;
+        }
+        return false;
       }
-      return false;
     }
 
     if (this.wrist.getBeambreak()) {
