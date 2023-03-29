@@ -120,6 +120,9 @@ public final class Constants {
 
     public static final int beambreakDIO = 2;
 
+    public static final int CubeHPDelay = 600; //for cube HP delay in miliseconds
+
+
     public static final double commandTimeout = 1.5;
 
     public static final PIDConstants intakePIDConstants = new PIDConstants(0.1, 0, 0);

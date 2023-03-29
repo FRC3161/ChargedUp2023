@@ -76,7 +76,8 @@ public class IntakeIn extends CommandBase {
           this.leds.set(Constants.LEDConstants.solidGreen);
           this.wrist.intakeStop();
         }
-        if (counter > 30) {
+  
+        if (counter > Constants.Wrist.CubeHPDelay/20) {
           
           Rest.forceSet(arm, wrist);
           return true; 
