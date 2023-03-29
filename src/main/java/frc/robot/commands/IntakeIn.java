@@ -9,13 +9,14 @@ import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Wrist;
+import edu.wpi.first.wpilibj.Timer;
 
 public class IntakeIn extends CommandBase {
   private final Wrist wrist;
   private final Arm arm;
   private PieceType gamePieceType;
   private boolean auto = false;
-  private int counter = 0;
+  private Timer stopWatch;
   private LEDs leds;
   private boolean hasSeen = false;
   private boolean delayedCommand = false;
@@ -51,7 +52,8 @@ public class IntakeIn extends CommandBase {
       this.wrist.currentPiece = this.gamePieceType;
       this.wrist.intakeIn(this.gamePieceType);
       this.hasSeen = false;
-      this.counter = 0;
+      this.stopWatch = new Timer();
+      this.stopWatch.start();
     }
   }
 
@@ -69,15 +71,15 @@ public class IntakeIn extends CommandBase {
   public boolean isFinished() {
     this.leds.set(Constants.LEDConstants.solidRed);
     if (this.hasSeen) {
-      counter++;
+  
       if (this.delayedCommand) { // Use delay for Cube HP
         //
-        if (counter > 10){
+        if (this.stopWatch.hasElapsed(0.2)){
           this.leds.set(Constants.LEDConstants.solidGreen);
           this.wrist.intakeStop();
         }
   
-        if (counter > Constants.Wrist.CubeHPDelay/20) {
+        if (this.stopWatch.hasElapsed(Constants.Wrist.CubeHPDelay/1000)) {
           
           Rest.forceSet(arm, wrist);
           return true; 
@@ -86,7 +88,7 @@ public class IntakeIn extends CommandBase {
         return false;
         //
       } else {
-        if (counter > 10) {
+        if (this.stopWatch.hasElapsed(.2)) {
           this.leds.set(Constants.LEDConstants.solidGreen);
           Rest.forceSet(arm, wrist);
           return true;
@@ -97,6 +99,7 @@ public class IntakeIn extends CommandBase {
 
     if (this.wrist.getBeambreak()) {
       this.hasSeen = true;
+      this.stopWatch.start();
       return false;
     }
     return false;
