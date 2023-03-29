@@ -62,10 +62,11 @@ public class RobotContainer {
   /* Subsystems */
   final Swerve s_Swerve = new Swerve();
   final Wrist wrist = new Wrist();
-  final PhotonCamera camera = new PhotonCamera(Constants.Vision.cameraName);
+  final PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCameraName);
+  final PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCameraName);
   final Arm arm = new Arm();
   final LEDs leds = new LEDs();
-  public final PoseEstimator poseEstimator = new PoseEstimator(s_Swerve, camera);
+  public final PoseEstimator poseEstimator = new PoseEstimator(s_Swerve, rightCamera, leftCamera);
 
   /* Auto */
   Hashtable<String, AutoBase> autoCommands = new Hashtable<String, AutoBase>();
