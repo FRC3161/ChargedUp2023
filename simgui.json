@@ -26,7 +26,8 @@
       "/SmartDashboard/Go to home": "Command",
       "/SmartDashboard/Reset Pose Estimator": "Command",
       "/SmartDashboard/l2 cone": "Command",
-      "/SmartDashboard/l3 cone": "Command"
+      "/SmartDashboard/l3 cone": "Command",
+      "/SmartDashboard/send values": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {

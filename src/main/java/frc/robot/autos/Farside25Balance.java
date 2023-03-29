@@ -1,13 +1,9 @@
 package frc.robot.autos;
 
 import java.util.HashMap;
-import java.util.List;
-
-import javax.print.attribute.standard.PrinterIsAcceptingJobs;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
@@ -20,11 +16,9 @@ import frc.robot.commands.Balance;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
 import frc.robot.commands.presets.ConeL2;
-import frc.robot.commands.presets.ConeL2Score;
 import frc.robot.commands.presets.ConeStanding;
 import frc.robot.commands.presets.CubeIntake;
 import frc.robot.commands.presets.CubeL2;
-import frc.robot.commands.presets.CubeL2Score;
 import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.LEDs;
@@ -47,7 +41,7 @@ public class Farside25Balance extends AutoBase {
         new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
-    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap = new HashMap<>();
     eventMap.put("outake", new SequentialCommandGroup(new IntakeOut(arm, wrist, leds),
         new Rest(arm, wrist, leds)));
     eventMap.put("rest", new Rest(arm, wrist, leds));

@@ -173,12 +173,8 @@ public class Wrist extends SubsystemBase {
     this.wristSetPoint = angle;
     if (this.wristSetPoint > Constants.Wrist.maxAngle) {
       this.wristSetPoint = Constants.Wrist.maxAngle;
-      SmartDashboard.putString("wrist limit", "MAX EXCEEDED");
     } else if (wristSetPoint < Constants.Wrist.minAngle) {
       this.wristSetPoint = Constants.Wrist.minAngle;
-      SmartDashboard.putString("wrist limit", "MIN EXCEEDED");
-    } else {
-      SmartDashboard.putString("wrist limit", "none");
     }
     this.handleMovement();
   }
@@ -208,12 +204,8 @@ public class Wrist extends SubsystemBase {
     this.wristRotationPidConstants.retrieveDashboard(this.wristRotationPID);
     if (this.wristSetPoint > Constants.Wrist.maxAngle) {
       this.wristSetPoint = Constants.Wrist.maxAngle;
-      SmartDashboard.putString("wrist limit", "MAX EXCEEDED");
     } else if (wristSetPoint < Constants.Wrist.minAngle) {
       this.wristSetPoint = Constants.Wrist.minAngle;
-      SmartDashboard.putString("wrist limit", "MIN EXCEEDED");
-    } else {
-      SmartDashboard.putString("wrist limit", "none");
     }
     double power = 0;
     power = this.wristRotationPID.calculate(this.getEncoderPosition(),
