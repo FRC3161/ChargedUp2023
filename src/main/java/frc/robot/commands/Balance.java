@@ -30,9 +30,10 @@ public class Balance extends CommandBase {
     this.swerve.drive(new Translation2d(power, 0), 0, true, true, true, true);
 
     if (isBalanced()) {
-      leds.set(Constants.LEDConstants.raindbow);
+      leds.set(Constants.LEDConstants.rainbow);
     } else {
-      leds.set(Constants.LEDConstants.skyblue);
+      //leds.set(Constants.LEDConstants.skyblue);
+      setLedGradient();
     }
   }
 
@@ -41,6 +42,43 @@ public class Balance extends CommandBase {
     return Math.abs(value) <= Constants.Swerve.balancePID.tolerance;
   }
 
+  public void setLedGradient() {
+    double value = Math.abs(this.swerve.getPitch().getDegrees());
+    if (value > 12) {
+      leds.set(Constants.LEDConstants.hotPink);
+    }
+    else if (value > 11) {
+      leds.set(Constants.LEDConstants.darkRed);
+    }
+    else if (value > 10) {
+      leds.set(Constants.LEDConstants.red);
+    }
+    else if (value > 9) {
+      leds.set(Constants.LEDConstants.redOrange);
+    }
+    else if (value > 8) {
+      leds.set(Constants.LEDConstants.orange);
+    }
+    else if (value > 7) {
+      leds.set(Constants.LEDConstants.gold);
+    }
+    else if (value > 6) {
+      leds.set(Constants.LEDConstants.yellow);
+    }
+    else if (value > 5) {
+      leds.set(Constants.LEDConstants.lawnGreen);
+    }
+    else if (value > 4) {
+      leds.set(Constants.LEDConstants.lime);
+    }
+    else if (value > 3) {
+      leds.set(Constants.LEDConstants.darkGreen);
+    }
+    else if (value > 2) {
+      leds.set(Constants.LEDConstants.green);
+    }
+    
+  }
   @Override
   public void end(boolean interrupted) {
     this.leds.set(Constants.LEDConstants.off);
