@@ -8,7 +8,6 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -188,6 +187,7 @@ public final class Constants {
     public static final String[] moduleNames = { "Front Left", "Front Right", "Back Left", "Back Right" }; // module #0,
     // #1, #2, #3
 
+    public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
     public static final PIDConstants drivePID = new PIDConstants(0.1, 0.00, 0.000);
 
     /* Front Left Module - Module 0 */
@@ -198,7 +198,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio"; // change to "rio" if it's on rio
       public static final double angleOffset = 22.5;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -211,7 +210,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 237.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -224,7 +222,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 181.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -237,7 +234,6 @@ public final class Constants {
       public static final String cancoderCANBUS = "rio";
       public static final double angleOffset = 52.0;
       public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
-      public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, cancoderCANBUS, angleOffset, anglePID, drivePID, driveSVA);
     }
@@ -283,6 +279,6 @@ public final class Constants {
     public static final double lawnGreen = 0.71;
     public static final double lime = 0.73;
     public static final double darkGreen = 0.75;
-    public static final double green = 0.77; 
+    public static final double green = 0.77;
   }
 }

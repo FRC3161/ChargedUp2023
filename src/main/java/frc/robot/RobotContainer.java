@@ -6,18 +6,14 @@ package frc.robot;
 
 import java.util.Hashtable;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -226,10 +222,10 @@ public class RobotContainer {
             FieldConstants.aprilTags.get(1).getY(), 0), new Rotation3d(0, 3.142, 0))));
 
     driver.povUp().toggleOnTrue(new DriveAt4(s_Swerve));
-    SmartDashboard.putData("set yaw", new InstantCommand(() -> {
-      double yaw = SmartDashboard.getNumber("set yaw position", 0);
-      s_Swerve.gyro.setYaw(yaw);
+    SmartDashboard.putData("send values", new InstantCommand(() -> {
+      s_Swerve.retrieveAutoConstants();
     }));
+
   }
 
   public void sendAutoCommands() {
@@ -267,6 +263,6 @@ public class RobotContainer {
       return new DefaultAuto(arm, wrist, leds).getCommand();
     }
 
-    return this.autoCommands.get(selectedAuto).getCommand();
+    return this.autoCommands.get(selectedAuto).updateAutoBuilder().getCommand();
   }
 }

@@ -14,7 +14,7 @@ public class DriveAt4 extends CommandBase {
 
     @Override
     public void execute() {
-        this.swerve.drive(new Translation2d(2, 0), 0, true, false, false, true);
+        this.swerve.drive(new Translation2d(4, 0), 0, true, false, false, true);
     }
 
     @Override

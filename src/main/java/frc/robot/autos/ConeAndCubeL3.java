@@ -1,21 +1,13 @@
 package frc.robot.autos;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.PieceType;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
-import frc.robot.commands.presets.ConeL2;
-import frc.robot.commands.presets.ConeL2Score;
-import frc.robot.commands.presets.ConeL3;
 import frc.robot.commands.presets.ConeL3Score;
-import frc.robot.commands.presets.ConeStanding;
 import frc.robot.commands.presets.CubeIntake;
-import frc.robot.commands.presets.CubeL2;
 import frc.robot.commands.presets.CubeL3;
 import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
@@ -25,16 +17,11 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Wrist;
 
 import java.util.HashMap;
-import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
 
 public class ConeAndCubeL3 extends AutoBase {
 
@@ -54,7 +41,7 @@ public class ConeAndCubeL3 extends AutoBase {
         new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
-    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap = new HashMap<>();
     eventMap.put("cubepickup", new CubeIntake(arm, wrist, leds));
     eventMap.put("intakein", new IntakeIn(arm, wrist, PieceType.CUBE, leds));
     eventMap.put("rest", new Rest(arm, wrist, leds));
