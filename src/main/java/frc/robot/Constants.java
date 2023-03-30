@@ -74,12 +74,13 @@ public final class Constants {
     public static final int leaderMotorID = 31;
     public static final int followerMotorID = 32;
     public static final int encoderDIOPort = 0;
-    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2); // En`coder reading when the arm is
-                                                                                   // parallel
+    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2 + 6.6); // En`coder reading when the
+                                                                                         // arm is
+    // parallel
     // to the ground.
     public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.92, 1.09, 0.04); // until we have some empirical
     // measurement, kS will be added
-    public static final PIDConstants armPID = new PIDConstants(1, 0, 0.05, 5);
+    public static final PIDConstants armPID = new PIDConstants(1, 0, 0.05, 0);
     public static final double armMaxOutput = 0.8;
     public static final double kMaxVelocityRadPerSecond = 0.3;
     public static final double kMaxAccelerationRadPerSecSquared = 0.1;
@@ -106,14 +107,15 @@ public final class Constants {
     public static final double intakeInCube = 0.5;
     public static final double intakeInCone = -0.5;
 
+    public static final double outakeConeL1 = 0.25;
     public static final double outakeConeL2 = 0.51735;
-    public static final double outakeConeL3 = 0.45;
+    public static final double outakeConeL3 = 1;
 
     public static final double outakeCubeL2 = -0.5;
     public static final double outakeCubeL3 = -0.6;
 
     public static final int absoluteEncoderPort = 1;
-    public static final double positionOffset = 4.96 + 0.035;
+    public static final double positionOffset = 4.96 + 0.035 - 2.11;
 
     public static final double maxAngle = 3.083457;
     public static final double minAngle = -1.664522;

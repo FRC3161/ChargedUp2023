@@ -42,23 +42,6 @@ public class PoseEstimator extends SubsystemBase {
     SmartDashboard.putData("Field", field2d);
   }
 
-  public Optional<Pose3d> getTagFromCamera(PhotonCamera camera) {
-    var result = this.rightCamera.getLatestResult();
-    if (!result.hasTargets())
-      return Optional.empty();
-
-    var id = result.getBestTarget().getFiducialId();
-    if ((id == -1 || id == 4 || id == 5) && result.getBestTarget().getPoseAmbiguity() < 0.3)
-      return Optional.empty();
-
-    var tag = aprilTagFieldLayout.getTagPose(id);
-    if (!tag.isEmpty()) {
-      return Optional.of(tag.get()
-          .plus(result.getBestTarget().getBestCameraToTarget().inverse()));
-    }
-    return tag;
-  }
-
   @Override
   public void periodic() {
     this.swerveDrivePoseEstimator.update(this.swerve.getYaw(), this.swerve.getPositions());

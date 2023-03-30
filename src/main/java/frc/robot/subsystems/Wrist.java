@@ -65,6 +65,8 @@ public class Wrist extends SubsystemBase {
     // Encoder
     this.wristEncoder = this.wristMotor.getEncoder();
     this.wristEncoder.setPositionConversionFactor(360 / Constants.Wrist.wristGearRatio);
+
+    Timer.delay(2);
     this.syncEncoders();
 
     TalonFXConfiguration intakeMotorConfiguration = new TalonFXConfiguration();
@@ -96,7 +98,7 @@ public class Wrist extends SubsystemBase {
     if (gamePiece == PieceType.CONE) {
       switch (this.gamePieceLevel) {
         case L1:
-          this.intakeMotor.set(ControlMode.PercentOutput, Constants.Wrist.outakeConeL2);
+          this.intakeMotor.set(ControlMode.PercentOutput, Constants.Wrist.outakeConeL1);
           break;
         case L2:
           this.intakeMotor.set(ControlMode.PercentOutput, Constants.Wrist.outakeConeL2);
@@ -193,7 +195,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getAbsoluteEncoder() {
-    double encoderValue = Units.degreesToRadians(this.absoluteEncoder.get() * 360)
+    double encoderValue = Units.degreesToRadians(this.absoluteEncoder.getDistance() * 360)
         - Constants.Wrist.positionOffset;
     return encoderValue;
     // hopefully fixes rollover issue
@@ -223,6 +225,9 @@ public class Wrist extends SubsystemBase {
     // this.wristEncoder.setPosition(Units.radiansToDegrees(this.getAbsoluteEncoder()));
     // this.wristSetPoint = this.getAbsoluteEncoder();
     // }
+    // double absoluteEncoder = getAbsoluteEncoder();
+    // this.wristEncoder.setPosition(Units.radiansToDegrees(absoluteEncoder));
+    // this.wristSetPoint = absoluteEncoder;
     this.wristEncoder.setPosition(Units.radiansToDegrees(3.114573));
     this.wristSetPoint = 3.114573;
   }
@@ -245,13 +250,13 @@ public class Wrist extends SubsystemBase {
     // SmartDashboard.putNumber("intake power", intakePower);
 
     // this.intakeMotor.set(ControlMode.PercentOutput, intakePower);
-
+    SmartDashboard.putNumber("Wrist setpoint", this.wristSetPoint);
     SmartDashboard.putNumber("Wrist relative encoder", this.getEncoderPosition());
     SmartDashboard.putNumber("Wrist pid output", power);
-    SmartDashboard.putNumber("Wrist absolute encoder", this.getAbsoluteEncoder());
-    SmartDashboard.putNumber("Wrist setpoint", this.wristSetPoint);
     SmartDashboard.putBoolean("wrist end", this.atSetpoint());
     SmartDashboard.putBoolean("beambreak", this.breambreak.get());
+    SmartDashboard.putNumber("wrist absolute error", this.getAbsoluteEncoder() - this.wristSetPoint);
+    SmartDashboard.putNumber("Wrist absolute encoder", this.getAbsoluteEncoder());
     SmartDashboard.putNumber("raw value absolute", this.absoluteEncoder.get());
 
   }

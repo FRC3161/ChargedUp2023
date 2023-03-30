@@ -35,7 +35,7 @@ public class IntakeIn extends CommandBase {
 
   @Override
   public void initialize() {
-    this.wrist.intakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 60, 0.08));
+    this.wrist.intakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 10, 30, 0.1));
     if (this.wrist.getBeambreak()) {
       this.end(auto);
     } else {

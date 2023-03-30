@@ -11,6 +11,6 @@ import frc.robot.subsystems.Wrist;
 public class CubeIntake extends ParallelCommandGroup {
     public CubeIntake(Arm arm, Wrist wrist, LEDs leds) {
         addCommands(new MoveArm(arm, -56.3, leds).withTimeout(Constants.Arm.commandTimeout),
-                new MoveWrist(wrist, 1.863, leds).withTimeout(Constants.Wrist.commandTimeout));
+                new MoveWrist(wrist, 1.663, leds).withTimeout(Constants.Wrist.commandTimeout));
     }
 }

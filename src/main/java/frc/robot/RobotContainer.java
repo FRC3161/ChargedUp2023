@@ -226,6 +226,9 @@ public class RobotContainer {
     SmartDashboard.putData("send values", new InstantCommand(() -> {
       s_Swerve.retrieveAutoConstants();
     }));
+    SmartDashboard.putData("sync wrist", new InstantCommand(() -> {
+      wrist.syncEncoders();
+    }));
 
   }
 
