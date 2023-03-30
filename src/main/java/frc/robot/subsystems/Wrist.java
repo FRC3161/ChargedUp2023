@@ -217,17 +217,18 @@ public class Wrist extends SubsystemBase {
 
     return power;
   }
-  
+
   public double getGooseEncoder() {
     double enc = this.absoluteEncoder.getAbsolutePosition();
     if ((this.previousAbsoluteEncoder < 0.25) && (enc > 0.75)) {
       this.gooseEncoderRollover = this.gooseEncoderRollover - 1;
-    }
-    else if ((this.previousAbsoluteEncoder > 0.75) && (enc < 0.25)) {
+    } else if ((this.previousAbsoluteEncoder > 0.75) && (enc < 0.25)) {
       this.gooseEncoderRollover = this.gooseEncoderRollover + 1;
     }
-    return Units.degreesToRadians((enc + this.gooseEncoderRollover)*360);
-     // TODO: add offset / - Constants.Wrist.absolutePositionOffset
+    return Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
+    // TODO: add offset / - Constants.Wrist.absolutePositionOffset
+
+  }
 
   public void syncEncoders() {
     // double absoluteEncoder = this.getAbsoluteEncoder();
@@ -248,9 +249,9 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     wristRotationPidConstants.retrieveDashboard(intakePIDController);
-    
+
     double power = MathUtil.clamp(this.handleMovement(), -0.7, 0.7);
-    if (Math.abs(this.getAbsoluteEncoder() > 4) { // reading is out of range
+    if (Math.abs(this.getAbsoluteEncoder()) > 4) { // reading is out of range
       this.wristMotor.set(0);
       this.wristMotor.disable();
     } else {
@@ -275,9 +276,8 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putNumber("Wrist absolute encoder", this.getAbsoluteEncoder());
     SmartDashboard.putNumber("raw value absolute", this.absoluteEncoder.get());
     SmartDashboard.putNumber("goose absolute encoder", Units.radiansToDegrees(this.getGooseEncoder()));
-        
-    this.previousAbsoluteEncoder = this.absoluteEncoder.getAbsolutePosition();
 
+    this.previousAbsoluteEncoder = this.absoluteEncoder.getAbsolutePosition();
 
   }
 }
