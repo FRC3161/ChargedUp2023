@@ -9,21 +9,31 @@ import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Wrist;
+import edu.wpi.first.wpilibj.Timer;
 
 public class IntakeIn extends CommandBase {
   private final Wrist wrist;
   private final Arm arm;
   private PieceType gamePieceType;
   private boolean auto = false;
-  private int counter = 0;
+  private Timer stopWatch;
   private LEDs leds;
   private boolean hasSeen = false;
+  private boolean delayedCommand = false;
 
   public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, LEDs leds) {
     this.arm = arm;
     this.wrist = wrist;
     this.gamePieceType = gamePiece;
     this.leds = leds;
+  }
+
+  public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, LEDs leds, boolean delay) {
+    this.arm = arm;
+    this.wrist = wrist;
+    this.gamePieceType = gamePiece;
+    this.leds = leds;
+    this.delayedCommand = delay;
   }
 
   public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, boolean auto) {
@@ -42,7 +52,8 @@ public class IntakeIn extends CommandBase {
       this.wrist.currentPiece = this.gamePieceType;
       this.wrist.intakeIn(this.gamePieceType);
       this.hasSeen = false;
-      this.counter = 0;
+      this.stopWatch = new Timer();
+      this.stopWatch.start();
     }
   }
 
@@ -60,17 +71,35 @@ public class IntakeIn extends CommandBase {
   public boolean isFinished() {
     this.leds.set(Constants.LEDConstants.solidRed);
     if (this.hasSeen) {
-      counter++;
-      if (counter > 10) {
-        this.leds.set(Constants.LEDConstants.solidGreen);
-        Rest.forceSet(arm, wrist);
-        return true;
+  
+      if (this.delayedCommand) { // Use delay for Cube HP
+        //
+        if (this.stopWatch.hasElapsed(0.2)){
+          this.leds.set(Constants.LEDConstants.solidGreen);
+          this.wrist.intakeStop();
+        }
+  
+        if (this.stopWatch.hasElapsed(Constants.Wrist.CubeHPDelay/1000)) {
+          
+          Rest.forceSet(arm, wrist);
+          return true; 
+
+        }
+        return false;
+        //
+      } else {
+        if (this.stopWatch.hasElapsed(.2)) {
+          this.leds.set(Constants.LEDConstants.solidGreen);
+          Rest.forceSet(arm, wrist);
+          return true;
+        }
+        return false;
       }
-      return false;
     }
 
     if (this.wrist.getBeambreak()) {
       this.hasSeen = true;
+      this.stopWatch.start();
       return false;
     }
     return false;

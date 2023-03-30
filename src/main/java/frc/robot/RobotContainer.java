@@ -177,7 +177,7 @@ public class RobotContainer {
     // Cube Human Player against ramp
     operator.leftTrigger().whileTrue(new ParallelCommandGroup(
         new CubeHP(arm, wrist, leds),
-        new IntakeIn(arm, this.wrist, PieceType.CUBE, leds)));
+        new IntakeIn(arm, this.wrist, PieceType.CUBE, leds,true)));
 
     // Cube Shelf - TBD
     operator.povRight().whileTrue(Commands.none());
