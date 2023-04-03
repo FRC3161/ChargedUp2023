@@ -23,44 +23,44 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Wrist;
 
 public class Tuning extends AutoBase {
-  public Tuning(Swerve swerve, PoseEstimator poseEstimator, Arm arm, Wrist wrist,
-      LEDs leds) {
-    this.poseEstimator = poseEstimator;
-    this.swerve = swerve;
-    this.arm = arm;
-    this.wrist = wrist;
-    this.leds = leds;
+    public Tuning(Swerve swerve, PoseEstimator poseEstimator, Arm arm, Wrist wrist,
+            LEDs leds) {
+        this.poseEstimator = poseEstimator;
+        this.swerve = swerve;
+        this.arm = arm;
+        this.wrist = wrist;
+        this.leds = leds;
 
-    pathGroup = PathPlanner.loadPathGroup("cableside",
-        new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-    pathGroup_red = PathPlanner.loadPathGroup("cableside_red",
-        new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        pathGroup = PathPlanner.loadPathGroup("Tuning",
+                new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                        Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        pathGroup_red = PathPlanner.loadPathGroup("Tuning",
+                new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                        Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
-    eventMap = new HashMap<>();
-    eventMap.put("standingcone", new ConeStanding(arm, wrist, leds));
-    eventMap.put("intakecone", new IntakeIn(arm, wrist, PieceType.CONE, leds));
+        eventMap = new HashMap<>();
+        eventMap.put("standingcone", new ConeStanding(arm, wrist, leds));
+        eventMap.put("intakecone", new IntakeIn(arm, wrist, PieceType.CONE, leds));
 
-    autoBuilder = new SwerveAutoBuilder(poseEstimator::currentPose,
-        poseEstimator::setCurrentPose,
-        Constants.Swerve.swerveKinematics,
-        new PIDConstants(Constants.AutoConstants.translationPID.p,
-            Constants.AutoConstants.translationPID.i,
-            Constants.AutoConstants.translationPID.d),
-        new PIDConstants(Constants.AutoConstants.rotationPID.p,
-            Constants.AutoConstants.rotationPID.i,
-            Constants.AutoConstants.rotationPID.d),
-        swerve::setModuleStates,
-        eventMap,
-        false,
-        swerve);
-  }
+        autoBuilder = new SwerveAutoBuilder(poseEstimator::currentPose,
+                poseEstimator::setCurrentPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDConstants(Constants.AutoConstants.translationPID.p,
+                        Constants.AutoConstants.translationPID.i,
+                        Constants.AutoConstants.translationPID.d),
+                new PIDConstants(Constants.AutoConstants.rotationPID.p,
+                        Constants.AutoConstants.rotationPID.i,
+                        Constants.AutoConstants.rotationPID.d),
+                swerve::setModuleStates,
+                eventMap,
+                false,
+                swerve);
+    }
 
-  @Override
-  public Command getCommand() {
-    return new SequentialCommandGroup(
-        new Rest(arm, wrist, leds),
-        autoBuilder.fullAuto(getPathGroup()));
-  }
+    @Override
+    public Command getCommand() {
+        return new SequentialCommandGroup(
+                new Rest(arm, wrist, leds),
+                autoBuilder.fullAuto(getPathGroup()));
+    }
 }

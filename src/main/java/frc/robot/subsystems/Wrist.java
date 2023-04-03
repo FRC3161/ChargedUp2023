@@ -52,6 +52,8 @@ public class Wrist extends SubsystemBase {
   public GamePieceLevel gamePieceLevel = GamePieceLevel.L1;
   public int colorCounter = 0;
 
+  public double gooseEncoderValue = 0;
+
   // Beam break
   private DigitalInput breambreak = new DigitalInput(Constants.Wrist.beambreakDIO);
 
@@ -69,6 +71,12 @@ public class Wrist extends SubsystemBase {
     this.wristEncoder.setPositionConversionFactor(360 / Constants.Wrist.wristGearRatio);
 
     Timer.delay(2);
+    double encoderAbsoluteValue = this.absoluteEncoder.getAbsolutePosition();
+    if (encoderAbsoluteValue > 0 && encoderAbsoluteValue < 0.5) {
+      this.previousAbsoluteEncoder = encoderAbsoluteValue - 0.01;
+      this.gooseEncoderRollover = 1;
+    }
+    this.getGooseEncoder();
     this.syncEncoders();
 
     TalonFXConfiguration intakeMotorConfiguration = new TalonFXConfiguration();
@@ -184,8 +192,8 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
-    return this.getEncoderPosition() > this.wristSetPoint + Units.degreesToRadians(-5)
-        && this.getEncoderPosition() < this.wristSetPoint + Units.degreesToRadians(5);
+    return this.getEncoderPosition() > this.wristSetPoint + Units.degreesToRadians(-20)
+        && this.getEncoderPosition() < this.wristSetPoint + Units.degreesToRadians(20);
   }
 
   public double getWristSetpoint() {
@@ -197,9 +205,12 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getAbsoluteEncoder() {
-    double encoderValue = Units.degreesToRadians(this.absoluteEncoder.getDistance() * 360)
-        - Constants.Wrist.positionOffset;
+    double encoderValue = gooseEncoderValue - Constants.Wrist.positionOffset;
     return encoderValue;
+    // double encoderValue =
+    // Units.degreesToRadians(this.absoluteEncoder.getDistance() * 360)
+    // - Constants.Wrist.positionOffset;
+    // return encoderValue;
     // hopefully fixes rollover issue
     // return ((encoderValue + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
@@ -225,6 +236,7 @@ public class Wrist extends SubsystemBase {
     } else if ((this.previousAbsoluteEncoder > 0.75) && (enc < 0.25)) {
       this.gooseEncoderRollover = this.gooseEncoderRollover + 1;
     }
+    this.gooseEncoderValue = Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
     return Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
     // TODO: add offset / - Constants.Wrist.absolutePositionOffset
 
@@ -239,15 +251,18 @@ public class Wrist extends SubsystemBase {
     // this.wristEncoder.setPosition(Units.radiansToDegrees(this.getAbsoluteEncoder()));
     // this.wristSetPoint = this.getAbsoluteEncoder();
     // }
-    // double absoluteEncoder = getAbsoluteEncoder();
-    // this.wristEncoder.setPosition(Units.radiansToDegrees(absoluteEncoder));
-    // this.wristSetPoint = absoluteEncoder;
-    this.wristEncoder.setPosition(Units.radiansToDegrees(3.114573));
-    this.wristSetPoint = 3.114573;
+    // double absoluteEncoder = Units
+    // .degreesToRadians((this.absoluteEncoder.getAbsolutePosition() +
+    // this.gooseEncoderRollover) * 360);
+    this.wristEncoder.setPosition(Units.radiansToDegrees(getAbsoluteEncoder()));
+    this.wristSetPoint = getAbsoluteEncoder();
+    // this.wristEncoder.setPosition(Units.radiansToDegrees(3.114573));
+    // this.wristSetPoint = 3.114573;
   }
 
   @Override
   public void periodic() {
+    this.getGooseEncoder();
     wristRotationPidConstants.retrieveDashboard(intakePIDController);
 
     double power = MathUtil.clamp(this.handleMovement(), -0.7, 0.7);
@@ -274,8 +289,9 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putBoolean("beambreak", this.breambreak.get());
     SmartDashboard.putNumber("wrist absolute error", this.getAbsoluteEncoder() - this.wristSetPoint);
     SmartDashboard.putNumber("Wrist absolute encoder", this.getAbsoluteEncoder());
-    SmartDashboard.putNumber("raw value absolute", this.absoluteEncoder.get());
-    SmartDashboard.putNumber("goose absolute encoder", Units.radiansToDegrees(this.getGooseEncoder()));
+    SmartDashboard.putNumber("raw value absolute", this.absoluteEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("goose absolute encoder", this.gooseEncoderValue);
+    SmartDashboard.putNumber("goose rollover", this.gooseEncoderRollover);
 
     this.previousAbsoluteEncoder = this.absoluteEncoder.getAbsolutePosition();
 

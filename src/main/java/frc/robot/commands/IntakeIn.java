@@ -46,14 +46,13 @@ public class IntakeIn extends CommandBase {
   @Override
   public void initialize() {
     this.wrist.intakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 10, 30, 0.1));
+    this.stopWatch = new Timer();
     if (this.wrist.getBeambreak()) {
       this.end(auto);
     } else {
       this.wrist.currentPiece = this.gamePieceType;
       this.wrist.intakeIn(this.gamePieceType);
       this.hasSeen = false;
-      this.stopWatch = new Timer();
-      this.stopWatch.start();
     }
   }
 
@@ -71,18 +70,18 @@ public class IntakeIn extends CommandBase {
   public boolean isFinished() {
     this.leds.set(Constants.LEDConstants.solidRed);
     if (this.hasSeen) {
-  
+
       if (this.delayedCommand) { // Use delay for Cube HP
         //
-        if (this.stopWatch.hasElapsed(0.2)){
+        if (this.stopWatch.hasElapsed(0.2)) {
           this.leds.set(Constants.LEDConstants.solidGreen);
           this.wrist.intakeStop();
         }
-  
-        if (this.stopWatch.hasElapsed(Constants.Wrist.CubeHPDelay/1000)) {
-          
+
+        if (this.stopWatch.hasElapsed(Constants.Wrist.CubeHPDelay / 1000)) {
+
           Rest.forceSet(arm, wrist);
-          return true; 
+          return true;
 
         }
         return false;

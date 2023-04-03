@@ -74,8 +74,9 @@ public final class Constants {
     public static final int leaderMotorID = 31;
     public static final int followerMotorID = 32;
     public static final int encoderDIOPort = 0;
-    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2 + 6.6); // En`coder reading when the
-                                                                                         // arm is
+    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2 + 6.6 + 5.3); // En`coder reading when
+                                                                                               // the
+    // arm is
     // parallel
     // to the ground.
     public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.92, 1.09, 0.04); // until we have some empirical
@@ -115,15 +116,14 @@ public final class Constants {
     public static final double outakeCubeL3 = -0.6;
 
     public static final int absoluteEncoderPort = 1;
-    public static final double positionOffset = 4.96 + 0.035 - 2.11;
+    public static final double positionOffset = 4.96 + 0.035 - 2.11 + 2.1;
 
     public static final double maxAngle = 3.083457;
     public static final double minAngle = -1.664522;
 
     public static final int beambreakDIO = 2;
 
-    public static final int CubeHPDelay = 600; //for cube HP delay in miliseconds
-
+    public static final int CubeHPDelay = 600; // for cube HP delay in miliseconds
 
     public static final double commandTimeout = 1.5;
 
@@ -197,8 +197,8 @@ public final class Constants {
     public static final String[] moduleNames = { "Front Left", "Front Right", "Back Left", "Back Right" }; // module #0,
     // #1, #2, #3
 
-    public static final SVAConstants driveSVA = new SVAConstants(0.13522, 2.67, 0.17176);
-    public static final PIDConstants drivePID = new PIDConstants(0.1, 0.00, 0.000);
+    public static final SVAConstants driveSVA = new SVAConstants(0.05, 2.5, 0.5);
+    public static final PIDConstants drivePID = new PIDConstants(0.001, 0.00005, 0.0005);
 
     /* Front Left Module - Module 0 */
     public static final class Mod0 {
@@ -250,15 +250,15 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 4;
+    public static final double kMaxSpeedMetersPerSecond = 4;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3.2;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 2;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     // public static final PIDConstants translationPID = new PIDConstants(0.8, 0.2,
     // 0.05);
-    public static final PIDConstants translationPID = new PIDConstants(3, 0.05, 0);
-    public static final PIDConstants rotationPID = new PIDConstants(1, 0, 0.05);
+    public static final PIDConstants translationPID = new PIDConstants(3, 0.5, 0);
+    public static final PIDConstants rotationPID = new PIDConstants(2, 0.002, 0.05);
 
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(

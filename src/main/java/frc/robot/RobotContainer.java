@@ -177,7 +177,7 @@ public class RobotContainer {
     // Cube Human Player against ramp
     operator.leftTrigger().whileTrue(new ParallelCommandGroup(
         new CubeHP(arm, wrist, leds),
-        new IntakeIn(arm, this.wrist, PieceType.CUBE, leds,true)));
+        new IntakeIn(arm, this.wrist, PieceType.CUBE, leds, true)));
 
     // Cube Shelf - TBD
     operator.povRight().whileTrue(Commands.none());
@@ -223,7 +223,8 @@ public class RobotContainer {
             FieldConstants.aprilTags.get(1).getY(), 0), new Rotation3d(0, 3.142, 0))));
 
     driver.povUp().toggleOnTrue(new DriveAt4(s_Swerve));
-    SmartDashboard.putData("send values", new InstantCommand(() -> {
+
+    driver.povLeft().whileTrue(new InstantCommand(() -> {
       s_Swerve.retrieveAutoConstants();
     }));
     SmartDashboard.putData("sync wrist", new InstantCommand(() -> {
@@ -264,7 +265,8 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     String selectedAuto = SmartDashboard.getString("selectedAuto", "default");
     if (selectedAuto.equals("default") || !this.autoCommands.containsKey(selectedAuto)) {
-      return new DefaultAuto(arm, wrist, leds).getCommand();
+      // return new DefaultAuto(arm, wrist, leds).getCommand();
+      return new Tuning(s_Swerve, poseEstimator, arm, wrist, leds).getCommand();
     }
 
     return this.autoCommands.get(selectedAuto).updateAutoBuilder().getCommand();

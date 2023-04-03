@@ -17,6 +17,6 @@ public class ConeL3 extends ParallelCommandGroup {
                     wrist.gamePieceLevel = GamePieceLevel.L3;
                 }),
                 new MoveArm(arm, 52.8, leds).withTimeout(Constants.Arm.commandTimeout),
-                new MoveWrist(wrist, -0.546148, leds).withTimeout(Constants.Wrist.commandTimeout));
+                new MoveWrist(wrist, -0.708438, leds).withTimeout(Constants.Wrist.commandTimeout));
     }
 }
