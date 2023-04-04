@@ -116,7 +116,7 @@ public final class Constants {
     public static final double outakeCubeL3 = -0.6;
 
     public static final int absoluteEncoderPort = 1;
-    public static final double positionOffset = 4.96 + 0.035 - 2.11 + 2.1;
+    public static final double positionOffset = 1.752436;
 
     public static final double maxAngle = 3.083457;
     public static final double minAngle = -1.664522;

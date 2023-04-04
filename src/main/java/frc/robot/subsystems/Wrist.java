@@ -72,10 +72,10 @@ public class Wrist extends SubsystemBase {
 
     Timer.delay(2);
     double encoderAbsoluteValue = this.absoluteEncoder.getAbsolutePosition();
-    if (encoderAbsoluteValue > 0 && encoderAbsoluteValue < 0.5) {
-      this.previousAbsoluteEncoder = encoderAbsoluteValue - 0.01;
-      this.gooseEncoderRollover = 1;
-    }
+    // if (encoderAbsoluteValue > 0 && encoderAbsoluteValue < 0.5) {
+    // this.previousAbsoluteEncoder = encoderAbsoluteValue - 0.01;
+    // this.gooseEncoderRollover = 1;
+    // }
     this.getGooseEncoder();
     this.syncEncoders();
 
@@ -207,12 +207,15 @@ public class Wrist extends SubsystemBase {
   public double getAbsoluteEncoder() {
     double encoderValue = gooseEncoderValue - Constants.Wrist.positionOffset;
     return encoderValue;
+    // return encoderValue;
     // double encoderValue =
     // Units.degreesToRadians(this.absoluteEncoder.getDistance() * 360)
     // - Constants.Wrist.positionOffset;
     // return encoderValue;
     // hopefully fixes rollover issue
-    // return ((encoderValue + Math.PI) % (2 * Math.PI)) - Math.PI;
+
+    // return encoderValue % Math.PI;
+
   }
 
   public double handleMovement() {
@@ -231,13 +234,16 @@ public class Wrist extends SubsystemBase {
 
   public double getGooseEncoder() {
     double enc = this.absoluteEncoder.getAbsolutePosition();
-    if ((this.previousAbsoluteEncoder < 0.25) && (enc > 0.75)) {
-      this.gooseEncoderRollover = this.gooseEncoderRollover - 1;
-    } else if ((this.previousAbsoluteEncoder > 0.75) && (enc < 0.25)) {
-      this.gooseEncoderRollover = this.gooseEncoderRollover + 1;
-    }
-    this.gooseEncoderValue = Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
-    return Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
+    // if ((this.previousAbsoluteEncoder < 0.25) && (enc > 0.75)) {
+    // this.gooseEncoderRollover = this.gooseEncoderRollover - 1;
+    // } else if ((this.previousAbsoluteEncoder > 0.75) && (enc < 0.25)) {
+    // this.gooseEncoderRollover = this.gooseEncoderRollover + 1;
+    // }
+    // this.gooseEncoderValue = Units.degreesToRadians((enc +
+    // this.gooseEncoderRollover) * 360);
+    // return Units.degreesToRadians((enc + this.gooseEncoderRollover) * 360);
+    this.gooseEncoderValue = Units.degreesToRadians(enc * 360);
+    return Units.degreesToRadians(enc * 360);
     // TODO: add offset / - Constants.Wrist.absolutePositionOffset
 
   }
@@ -263,7 +269,6 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     this.getGooseEncoder();
-    wristRotationPidConstants.retrieveDashboard(intakePIDController);
 
     double power = MathUtil.clamp(this.handleMovement(), -0.7, 0.7);
     if (Math.abs(this.getAbsoluteEncoder()) > 4) { // reading is out of range
