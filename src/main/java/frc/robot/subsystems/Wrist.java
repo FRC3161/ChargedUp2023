@@ -226,8 +226,15 @@ public class Wrist extends SubsystemBase {
       this.wristSetPoint = Constants.Wrist.minAngle;
     }
     double power = 0;
-    power = this.wristRotationPID.calculate(this.getAbsoluteEncoder(),
-        this.wristSetPoint);
+    double encoderValue = this.getAbsoluteEncoder();
+
+    if (Math.abs(encoderValue - this.wristSetPoint) <= Units.degreesToRadians(10)) {
+      power = this.wristRotationPID.calculate(encoderValue,
+          this.wristSetPoint);
+    } else {
+      PIDController wristPD = this.wristRotationPidConstants.getControllerPD();
+      power = wristPD.calculate(encoderValue, this.wristSetPoint);
+    }
 
     return power;
   }

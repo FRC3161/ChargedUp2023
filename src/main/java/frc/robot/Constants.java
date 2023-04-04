@@ -100,7 +100,7 @@ public final class Constants {
     public static final int intakeMotorID = 9;
     public static final int wristMotorID = 33;
 
-    public static final PIDConstants wristRotationPID = new PIDConstants(0.7, 0, 0.0005, Units.degreesToRadians(10));
+    public static final PIDConstants wristRotationPID = new PIDConstants(0.7, 0.6, 0.0005, Units.degreesToRadians(10));
     public static final double wristGearRatio = 67.2;
 
     public static final double intakePower = 0.5;

@@ -35,6 +35,14 @@ public class PIDConstants {
     return controller;
   }
 
+  public PIDController getControllerPD() {
+    PIDController controller = new PIDController(p, 0, d);
+    if (tolerance != 0) {
+      controller.setTolerance(tolerance);
+    }
+    return controller;
+  }
+
   /**
    * Applies the pid values for the given controller
    * 

@@ -15,11 +15,11 @@ public class IntakeIn extends CommandBase {
   private final Wrist wrist;
   private final Arm arm;
   private PieceType gamePieceType;
-  private boolean auto = false;
   private Timer stopWatch;
   private LEDs leds;
   private boolean hasSeen = false;
   private boolean delayedCommand = false;
+  private boolean override = false;
 
   public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, LEDs leds) {
     this.arm = arm;
@@ -36,11 +36,13 @@ public class IntakeIn extends CommandBase {
     this.delayedCommand = delay;
   }
 
-  public IntakeIn(Arm arm, Wrist wrist, PieceType gamePiece, boolean auto) {
+  public IntakeIn(Arm arm, Wrist wrist, LEDs leds) {
     this.arm = arm;
     this.wrist = wrist;
-    this.gamePieceType = gamePiece;
-    this.auto = auto;
+    this.leds = leds;
+
+    this.override = true;
+    this.gamePieceType = this.wrist.currentPiece;
   }
 
   @Override
@@ -48,7 +50,7 @@ public class IntakeIn extends CommandBase {
     this.wrist.intakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 10, 30, 0.1));
     this.stopWatch = new Timer();
     if (this.wrist.getBeambreak()) {
-      this.end(auto);
+      this.end(false);
     } else {
       this.wrist.currentPiece = this.gamePieceType;
       this.wrist.intakeIn(this.gamePieceType);
@@ -68,6 +70,11 @@ public class IntakeIn extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (this.override) {
+      this.leds.set(Constants.LEDConstants.redOrange);
+      return false;
+    }
+
     this.leds.set(Constants.LEDConstants.solidRed);
     if (this.hasSeen) {
 

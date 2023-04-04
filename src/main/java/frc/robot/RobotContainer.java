@@ -171,7 +171,7 @@ public class RobotContainer {
     // Cone Shelf Standing up
     operator.povLeft().whileTrue(new ParallelCommandGroup(
         new ConeShelf(arm, wrist, leds),
-        new IntakeIn(arm, this.wrist, PieceType.CONE, leds)));
+        new IntakeIn(arm, this.wrist, PieceType.CONE, leds, true)));
 
     /* CUBE */
     // Cube Human Player against ramp
@@ -221,8 +221,6 @@ public class RobotContainer {
     SmartDashboard.putData("Go to Position", new GoToPosition(s_Swerve, poseEstimator,
         new Transform3d(new Translation3d(FieldConstants.aprilTags.get(1).getX() - 0.5,
             FieldConstants.aprilTags.get(1).getY(), 0), new Rotation3d(0, 3.142, 0))));
-
-    driver.povUp().toggleOnTrue(new DriveAt4(s_Swerve));
 
     driver.povLeft().whileTrue(new InstantCommand(() -> {
       s_Swerve.retrieveAutoConstants();

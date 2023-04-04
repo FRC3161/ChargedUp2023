@@ -151,9 +151,15 @@ public class TeleopSwerve extends CommandBase {
     this.pointTo();
 
     if (!this.NOSMode.getAsBoolean()) {
-      translationVal *= 0.6;
-      strafeVal *= 0.6;
-      rotationVal *= 0.3;
+      if (robotCentricSup.getAsBoolean()) {
+        translationVal *= 0.2;
+        strafeVal *= 0.2;
+        rotationVal *= 0.3;
+      } else {
+        translationVal *= 0.6;
+        strafeVal *= 0.6;
+        rotationVal *= 0.3;
+      }
     }
 
     /* Drive */
@@ -161,7 +167,7 @@ public class TeleopSwerve extends CommandBase {
         new Translation2d(translationVal,
             strafeVal).times(Constants.Swerve.maxSpeed),
         rotationVal * Constants.Swerve.maxAngularVelocity,
-        !robotCentricSup.getAsBoolean(),
+        true,
         true, // True -> driving based on percent output, False -> driving based on PID and
               // FeedForward
         this.isDefense, this.defenseOverride);
