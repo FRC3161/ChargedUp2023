@@ -182,6 +182,8 @@ public class RobotContainer {
     // Cube Shelf - TBD
     operator.povRight().whileTrue(Commands.none());
 
+    operator.povUp().whileTrue(new OverrideIntake(arm, wrist, leds));
+
     operator.start().whileTrue(new Blink(leds, Constants.LEDConstants.solidYellow));
     operator.back().whileTrue(new Blink(leds, Constants.LEDConstants.solidViolet));
   }
@@ -190,6 +192,8 @@ public class RobotContainer {
     this.autoCommands.put("L2 Link Farside", new FarsideL2Link(s_Swerve, poseEstimator, wrist, arm, leds));
     this.autoCommands.put("L2 2.5 Farside + Balance", new Farside25Balance(s_Swerve, poseEstimator, wrist, arm, leds));
     this.autoCommands.put("Cable Side L2", new CableSideL2(s_Swerve, poseEstimator, arm, wrist, leds));
+    this.autoCommands.put("centerbalance", new CenterChargeStation(s_Swerve, poseEstimator, arm, wrist, leds));
+    this.autoCommands.put("2056 Link", new Link2056(s_Swerve, poseEstimator, wrist, arm, leds));
     this.autoCommands.put("Cable Side L3", new CableSideL3(s_Swerve, poseEstimator, arm, wrist, leds));
 
     this.autoCommands.put("Two cone auto", new TwoConeAuto(s_Swerve,

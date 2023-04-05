@@ -40,4 +40,4 @@ def generate_red_aliance(file_name: str, directory: str):
     new_path_file.close()
 
 
-generate_red_aliance("cableside.path", DIRECTORY)
+generate_red_aliance("2056_Link_Balance.path", DIRECTORY)

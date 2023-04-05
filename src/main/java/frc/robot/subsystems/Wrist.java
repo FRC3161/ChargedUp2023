@@ -104,6 +104,14 @@ public class Wrist extends SubsystemBase {
     }
   }
 
+  public void intakeIn(PieceType gamePiece, double power) {
+    if (gamePiece == PieceType.CONE) {
+      this.intakeMotor.set(ControlMode.PercentOutput, -power);
+    } else if (gamePiece == PieceType.CUBE) {
+      this.intakeMotor.set(ControlMode.PercentOutput, power);
+    }
+  }
+
   public void intakeOut(PieceType gamePiece) {
     if (gamePiece == PieceType.CONE) {
       switch (this.gamePieceLevel) {
@@ -219,7 +227,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double handleMovement() {
-    this.wristRotationPidConstants.retrieveDashboard(this.wristRotationPID);
+    this.wristRotationPID.setIntegratorRange(-0.1, 0.1);
     if (this.wristSetPoint > Constants.Wrist.maxAngle) {
       this.wristSetPoint = Constants.Wrist.maxAngle;
     } else if (wristSetPoint < Constants.Wrist.minAngle) {
@@ -229,11 +237,12 @@ public class Wrist extends SubsystemBase {
     double encoderValue = this.getAbsoluteEncoder();
 
     if (Math.abs(encoderValue - this.wristSetPoint) <= Units.degreesToRadians(10)) {
+
       power = this.wristRotationPID.calculate(encoderValue,
           this.wristSetPoint);
     } else {
-      PIDController wristPD = this.wristRotationPidConstants.getControllerPD();
-      power = wristPD.calculate(encoderValue, this.wristSetPoint);
+      PIDController wristP = this.wristRotationPidConstants.getControllerP();
+      power = wristP.calculate(encoderValue, this.wristSetPoint);
     }
 
     return power;
@@ -294,6 +303,7 @@ public class Wrist extends SubsystemBase {
     // SmartDashboard.putNumber("intake power", intakePower);
 
     // this.intakeMotor.set(ControlMode.PercentOutput, intakePower);
+
     SmartDashboard.putNumber("Wrist setpoint", this.wristSetPoint);
     SmartDashboard.putNumber("Wrist relative encoder", this.getEncoderPosition());
     SmartDashboard.putNumber("Wrist pid output", power);

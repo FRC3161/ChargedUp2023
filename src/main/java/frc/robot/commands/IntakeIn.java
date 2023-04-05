@@ -49,12 +49,17 @@ public class IntakeIn extends CommandBase {
   public void initialize() {
     this.wrist.intakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 10, 30, 0.1));
     this.stopWatch = new Timer();
-    if (this.wrist.getBeambreak()) {
-      this.end(false);
-    } else {
-      this.wrist.currentPiece = this.gamePieceType;
+    if (this.override) {
       this.wrist.intakeIn(this.gamePieceType);
       this.hasSeen = false;
+    } else {
+      if (this.wrist.getBeambreak()) {
+        this.end(false);
+      } else {
+        this.wrist.currentPiece = this.gamePieceType;
+        this.wrist.intakeIn(this.gamePieceType);
+        this.hasSeen = false;
+      }
     }
   }
 

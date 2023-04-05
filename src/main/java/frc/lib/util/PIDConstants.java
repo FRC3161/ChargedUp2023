@@ -35,8 +35,8 @@ public class PIDConstants {
     return controller;
   }
 
-  public PIDController getControllerPD() {
-    PIDController controller = new PIDController(p, 0, d);
+  public PIDController getControllerP() {
+    PIDController controller = new PIDController(p, 0, 0);
     if (tolerance != 0) {
       controller.setTolerance(tolerance);
     }

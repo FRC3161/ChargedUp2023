@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.PieceType;
 import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
+import frc.robot.commands.presets.ConeL2;
 import frc.robot.commands.presets.ConeStanding;
+import frc.robot.commands.presets.CubeIntake;
+import frc.robot.commands.presets.CubeL2;
 import frc.robot.commands.presets.CubeL2Score;
 import frc.robot.commands.presets.Rest;
 import frc.robot.subsystems.Arm;
@@ -32,15 +36,21 @@ public class CableSideL2 extends AutoBase {
     this.leds = leds;
 
     pathGroup = PathPlanner.loadPathGroup("cableside",
-        new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        new PathConstraints(1.5,
+            1.5));
     pathGroup_red = PathPlanner.loadPathGroup("cableside_red",
-        new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+        new PathConstraints(1.5,
+            1.5));
 
     eventMap = new HashMap<>();
+    eventMap.put("outake", new SequentialCommandGroup(new IntakeOut(arm, wrist, leds), new Rest(arm, wrist, leds)));
+    eventMap.put("rest", new Rest(arm, wrist, leds));
+    eventMap.put("intakecube", new IntakeIn(arm, wrist, PieceType.CUBE, leds));
+    eventMap.put("cubeintakeposition", new CubeIntake(arm, wrist, leds));
+    eventMap.put("cubel2", new CubeL2(arm, wrist, leds));
     eventMap.put("standingcone", new ConeStanding(arm, wrist, leds));
     eventMap.put("intakecone", new IntakeIn(arm, wrist, PieceType.CONE, leds));
+    eventMap.put("conel2", new ConeL2(arm, wrist, leds));
 
     autoBuilder = new SwerveAutoBuilder(poseEstimator::currentPose,
         poseEstimator::setCurrentPose,
@@ -60,11 +70,9 @@ public class CableSideL2 extends AutoBase {
   @Override
   public Command getCommand() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> {
-          this.wrist.currentPiece = PieceType.CUBE;
-        }),
         new Rest(arm, wrist, leds),
-        new CubeL2Score(arm, wrist, leds),
-        autoBuilder.fullAuto(getPathGroup()));
+        new ConeL2(arm, wrist, leds),
+        autoBuilder.fullAuto(getPathGroup()),
+        new IntakeOut(arm, wrist, leds));
   }
 }

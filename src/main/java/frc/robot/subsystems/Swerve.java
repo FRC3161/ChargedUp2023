@@ -337,9 +337,9 @@ public class Swerve extends SubsystemBase {
           "speed",
           mod.getSpeed());
     }
-    // SmartDashboard.putNumber("roll", getRoll().getDegrees());
-    // SmartDashboard.putNumber("pitch", getPitch().getDegrees());
-    // SmartDashboard.putNumber("yaw", getYaw().getDegrees());
+    SmartDashboard.putNumber("roll", getRoll().getDegrees());
+    SmartDashboard.putNumber("pitch", getPitch().getDegrees());
+    SmartDashboard.putNumber("yaw", getYaw().getDegrees());
     // SmartDashboard.putNumber("orientationHold",
     // this.orientationWhenReleased.getDegrees());
   }

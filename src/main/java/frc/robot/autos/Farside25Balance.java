@@ -34,10 +34,10 @@ public class Farside25Balance extends AutoBase {
     this.arm = arm;
     this.leds = leds;
 
-    pathGroup = PathPlanner.loadPathGroup("Farside25Balance",
+    pathGroup = PathPlanner.loadPathGroup("2056_Link_Balance",
         new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-    pathGroup_red = PathPlanner.loadPathGroup("Farside25Balance_red",
+    pathGroup_red = PathPlanner.loadPathGroup("2056_Link_Balance_red",
         new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
@@ -72,9 +72,6 @@ public class Farside25Balance extends AutoBase {
         new Rest(arm, wrist, leds),
         new ConeL2(arm, wrist, leds),
         autoBuilder.fullAuto(getPathGroup()),
-        new InstantCommand(() -> {
-          swerve.resetHold();
-        }),
-        new Balance(swerve, leds));
+        new Balance(swerve, leds, true));
   }
 }
