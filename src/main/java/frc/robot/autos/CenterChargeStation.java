@@ -37,10 +37,12 @@ public class CenterChargeStation extends AutoBase {
 
     pathGroup = PathPlanner.loadPathGroup("CenterBalance",
         new PathConstraints(1,
-            2));
+            2),
+        new PathConstraints(4, 4), new PathConstraints(1, 2), new PathConstraints(4, 4));
     pathGroup_red = PathPlanner.loadPathGroup("CenterBalance_red",
         new PathConstraints(1,
-            2));
+            2),
+        new PathConstraints(4, 4), new PathConstraints(1, 2), new PathConstraints(4, 4));
 
     eventMap = new HashMap<>();
     eventMap.put("outake", new SequentialCommandGroup(new IntakeOut(arm, wrist, leds), new Rest(arm, wrist, leds)));

@@ -189,25 +189,27 @@ public class RobotContainer {
   }
 
   public void configureAutoCommands() {
-    this.autoCommands.put("L2 Link Farside", new FarsideL2Link(s_Swerve, poseEstimator, wrist, arm, leds));
+    // this.autoCommands.put("L2 Link Farside", new FarsideL2Link(s_Swerve,
+    // poseEstimator, wrist, arm, leds));
     this.autoCommands.put("L2 2.5 Farside + Balance", new Farside25Balance(s_Swerve, poseEstimator, wrist, arm, leds));
     this.autoCommands.put("Cable Side L2", new CableSideL2(s_Swerve, poseEstimator, arm, wrist, leds));
     this.autoCommands.put("centerbalance", new CenterChargeStation(s_Swerve, poseEstimator, arm, wrist, leds));
     this.autoCommands.put("2056 Link", new Link2056(s_Swerve, poseEstimator, wrist, arm, leds));
-    this.autoCommands.put("Cable Side L3", new CableSideL3(s_Swerve, poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("Cable Side L3", new CableSideL3(s_Swerve,
+    // poseEstimator, arm, wrist, leds));
 
-    this.autoCommands.put("Two cone auto", new TwoConeAuto(s_Swerve,
-        poseEstimator, arm, wrist, leds));
-    this.autoCommands.put("Cone and Cube L2", new ConeAndCube(s_Swerve,
-        poseEstimator, arm, wrist, leds));
-    this.autoCommands.put("Cone and Cube L3", new ConeAndCubeL3(s_Swerve,
-        poseEstimator, arm, wrist, leds));
-    this.autoCommands.put("L2 Cone Charge Station",
-        new L2ChargeStationCone(s_Swerve, poseEstimator, arm, wrist, leds));
-    this.autoCommands.put("L3 Cone Farside",
-        new FarsideConeL3(s_Swerve, poseEstimator, arm, wrist, leds));
-    this.autoCommands.put("L2 Cone Center Balance",
-        new CenterChargeStation(s_Swerve, poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("Two cone auto", new TwoConeAuto(s_Swerve,
+    // poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("Cone and Cube L2", new ConeAndCube(s_Swerve,
+    // poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("Cone and Cube L3", new ConeAndCubeL3(s_Swerve,
+    // poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("L2 Cone Charge Station",
+    // new L2ChargeStationCone(s_Swerve, poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("L3 Cone Farside",
+    // new FarsideConeL3(s_Swerve, poseEstimator, arm, wrist, leds));
+    // this.autoCommands.put("L2 Cone Center Balance",
+    // new CenterChargeStation(s_Swerve, poseEstimator, arm, wrist, leds));
     this.autoCommands.put("Cone L2 Stationary", new StationaryConeL2(arm, wrist,
         leds));
     this.autoCommands.put("Cone L3 Stationary", new StationaryConeL3(arm, wrist,
