@@ -44,6 +44,7 @@ public class Wrist extends SubsystemBase {
   private final PIDController intakePIDController = Constants.Wrist.intakePIDConstants.getController();
   private double wristSetPoint = 0;
   private double intakeSetVelocity = 0;
+  public boolean isCorrecting = false;
 
   // Color sensor
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -78,11 +79,12 @@ public class Wrist extends SubsystemBase {
     // }
     this.getGooseEncoder();
     this.syncEncoders();
+    this.wristRotationPID.setIntegratorRange(-0.06, 0.06);
 
     TalonFXConfiguration intakeMotorConfiguration = new TalonFXConfiguration();
-    this.wristRotationPidConstants.sendDashboard("Wrist Rotation");
-    this.intakePIDConstants.sendDashboard("intake pid");
-    SmartDashboard.putNumber("set velocity", intakeSetVelocity);
+    // this.wristRotationPidConstants.sendDashboard("Wrist Rotation");
+    // this.intakePIDConstants.sendDashboard("intake pid");
+    // SmartDashboard.putNumber("set velocity", intakeSetVelocity);
     // intakeMotorConfiguration.supplyCurrLimit = new
     // SupplyCurrentLimitConfiguration(
     // true,
@@ -94,6 +96,7 @@ public class Wrist extends SubsystemBase {
     intakeMotor.configAllSettings(intakeMotorConfiguration);
 
     SmartDashboard.putString("wrist limit", "none");
+    isCorrecting = false;
   }
 
   public void intakeIn(PieceType gamePiece) {
@@ -213,8 +216,11 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getAbsoluteEncoder() {
-    double encoderValue = gooseEncoderValue - Constants.Wrist.positionOffset;
-    return encoderValue;
+    return Units.degreesToRadians(wristEncoder.getPosition());
+
+    // double encoderValue = gooseEncoderValue - Constants.Wrist.positionOffset;
+    // return encoderValue;
+
     // return encoderValue;
     // double encoderValue =
     // Units.degreesToRadians(this.absoluteEncoder.getDistance() * 360)
@@ -227,7 +233,6 @@ public class Wrist extends SubsystemBase {
   }
 
   public double handleMovement() {
-    this.wristRotationPID.setIntegratorRange(-0.1, 0.1);
     if (this.wristSetPoint > Constants.Wrist.maxAngle) {
       this.wristSetPoint = Constants.Wrist.maxAngle;
     } else if (wristSetPoint < Constants.Wrist.minAngle) {
@@ -235,9 +240,8 @@ public class Wrist extends SubsystemBase {
     }
     double power = 0;
     double encoderValue = this.getAbsoluteEncoder();
-
-    if (Math.abs(encoderValue - this.wristSetPoint) <= Units.degreesToRadians(10)) {
-
+    if (Math.abs(encoderValue - this.wristSetPoint) <= Units.degreesToRadians(10)
+        && isCorrecting) {
       power = this.wristRotationPID.calculate(encoderValue,
           this.wristSetPoint);
     } else {
@@ -276,10 +280,10 @@ public class Wrist extends SubsystemBase {
     // double absoluteEncoder = Units
     // .degreesToRadians((this.absoluteEncoder.getAbsolutePosition() +
     // this.gooseEncoderRollover) * 360);
-    this.wristEncoder.setPosition(Units.radiansToDegrees(getAbsoluteEncoder()));
-    this.wristSetPoint = getAbsoluteEncoder();
-    // this.wristEncoder.setPosition(Units.radiansToDegrees(3.114573));
-    // this.wristSetPoint = 3.114573;
+    // this.wristEncoder.setPosition(Units.radiansToDegrees(getAbsoluteEncoder()));
+    // this.wristSetPoint = getAbsoluteEncoder();
+    this.wristEncoder.setPosition(Units.radiansToDegrees(3.0573));
+    this.wristSetPoint = 3.0573;
   }
 
   @Override
@@ -287,12 +291,12 @@ public class Wrist extends SubsystemBase {
     this.getGooseEncoder();
 
     double power = MathUtil.clamp(this.handleMovement(), -0.7, 0.7);
-    if (Math.abs(this.getAbsoluteEncoder()) > 4) { // reading is out of range
-      this.wristMotor.set(0);
-      this.wristMotor.disable();
-    } else {
-      this.wristMotor.set(power);
-    }
+    // if (Math.abs(this.getAbsoluteEncoder()) > 4) { // reading is out of range
+    // this.wristMotor.set(0);
+    // this.wristMotor.disable();
+    // } else {
+    // }
+    this.wristMotor.set(power);
     // intakeSetVelocity = SmartDashboard.getNumber("set velocity",
     // intakeSetVelocity);
     // double intakePower =

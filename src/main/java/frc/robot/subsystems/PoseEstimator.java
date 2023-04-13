@@ -20,13 +20,13 @@ public class PoseEstimator extends SubsystemBase {
   private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private final Field2d field2d = new Field2d();
   private AprilTagFieldLayout aprilTagFieldLayout;
-  private final PhotonCamera rightCamera;
-  private final PhotonCamera leftCamera;
+  // private final PhotonCamera rightCamera;
+  // private final PhotonCamera leftCamera;
 
-  public PoseEstimator(Swerve swerve, PhotonCamera rightCamera, PhotonCamera leftCamera) {
+  public PoseEstimator(Swerve swerve) {
     this.swerve = swerve;
-    this.rightCamera = rightCamera;
-    this.leftCamera = leftCamera;
+    // this.rightCamera = rightCamera;
+    // this.leftCamera = leftCamera;
 
     try {
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -49,39 +49,42 @@ public class PoseEstimator extends SubsystemBase {
     SmartDashboard.putString("Estimated Pose", this.getFormattedPose());
     field2d.setRobotPose(currentPose());
 
-    var rightResult = this.rightCamera.getLatestResult();
-    if (rightResult.hasTargets()) {
-      var rightId = rightResult.getBestTarget().getFiducialId();
-      if (rightId != -1 && rightId != 4 && rightId != 5 && rightResult.getBestTarget().getPoseAmbiguity() < 0.3) {
-        var rightTag = aprilTagFieldLayout.getTagPose(rightId);
-        if (rightTag.isPresent()) {
+    // var rightResult = this.rightCamera.getLatestResult();
+    // if (rightResult.hasTargets()) {
+    // var rightId = rightResult.getBestTarget().getFiducialId();
+    // if (rightId != -1 && rightId != 4 && rightId != 5 &&
+    // rightResult.getBestTarget().getPoseAmbiguity() < 0.3) {
+    // var rightTag = aprilTagFieldLayout.getTagPose(rightId);
+    // if (rightTag.isPresent()) {
 
-          this.swerveDrivePoseEstimator.addVisionMeasurement(
-              rightTag.get()
-                  .plus(rightResult.getBestTarget().getBestCameraToTarget().inverse())
-                  .plus(Constants.Vision.cameraToRobot)
-                  .toPose2d(),
-              rightResult.getTimestampSeconds());
-        }
-      }
-    }
+    // this.swerveDrivePoseEstimator.addVisionMeasurement(
+    // rightTag.get()
+    // .plus(rightResult.getBestTarget().getBestCameraToTarget().inverse())
+    // .plus(Constants.Vision.cameraToRobot)
+    // .toPose2d(),
+    // rightResult.getTimestampSeconds());
+    // }
+    // }
+    // }
 
-    var leftResult = this.leftCamera.getLatestResult();
-    if (leftResult.hasTargets()) {
-      var leftId = leftResult.getBestTarget().getFiducialId();
-      if (leftId != -1 && leftId != 4 && leftId != 5 && leftResult.getBestTarget().getPoseAmbiguity() < 0.3) {
-        var leftTag = aprilTagFieldLayout.getTagPose(leftId);
-        if (leftTag.isPresent()) {
+    // var leftResult = this.leftCamera.getLatestResult();
+    // if (leftResult.hasTargets()) {
+    // var leftId = leftResult.getBestTarget().getFiducialId();
+    // if (leftId != -1 && leftId != 4 && leftId != 5 &&
+    // leftResult.getBestTarget().getPoseAmbiguity() < 0.3) {
+    // var leftTag = aprilTagFieldLayout.getTagPose(leftId);
+    // if (leftTag.isPresent()) {
 
-          this.swerveDrivePoseEstimator.addVisionMeasurement(
-              leftTag.get()
-                  .plus(leftResult.getBestTarget().getBestCameraToTarget().inverse())
-                  .plus(Constants.Vision.leftCameraToRobot)
-                  .toPose2d(),
-              leftResult.getTimestampSeconds());
-        }
-      }
-    }
+    // this.swerveDrivePoseEstimator.addVisionMeasurement(
+    // leftTag.get()
+    // .plus(leftResult.getBestTarget().getBestCameraToTarget().inverse())
+    // .plus(Constants.Vision.leftCameraToRobot)
+    // .toPose2d(),
+    // leftResult.getTimestampSeconds());
+    // }
+    // }
+    // }
+
     // var rightCameraTag = getTagFromCamera(rightCamera);
     // var leftCameraTag = getTagFromCamera(leftCamera);
 

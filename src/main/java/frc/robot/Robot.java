@@ -44,9 +44,6 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     LiveWindow.disableAllTelemetry();
     m_robotContainer = new RobotContainer();
-    UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setPixelFormat(PixelFormat.kYUYV);
-    camera.setResolution(320, 240);
 
     // PathPlannerServer.startServer(5811);
     // PortForwarder.add(5800, "photonvision.local", \)

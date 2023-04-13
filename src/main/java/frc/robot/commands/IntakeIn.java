@@ -90,7 +90,7 @@ public class IntakeIn extends CommandBase {
           this.wrist.intakeStop();
         }
 
-        if (this.stopWatch.hasElapsed(Constants.Wrist.CubeHPDelay / 1000)) {
+        if (this.stopWatch.hasElapsed(1.7)) {
 
           Rest.forceSet(arm, wrist);
           return true;

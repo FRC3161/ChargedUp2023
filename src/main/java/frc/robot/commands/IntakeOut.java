@@ -36,6 +36,7 @@ public class IntakeOut extends CommandBase {
       Rest.forceSet(arm, wrist);
     }
     this.wrist.intakeStop();
+    this.wrist.isCorrecting = false;
   }
 
   @Override

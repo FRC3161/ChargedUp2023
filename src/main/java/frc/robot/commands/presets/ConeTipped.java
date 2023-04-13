@@ -11,6 +11,6 @@ import frc.robot.subsystems.Wrist;
 public class ConeTipped extends ParallelCommandGroup {
     public ConeTipped(Arm arm, Wrist wrist, LEDs leds) {
         addCommands(new MoveArm(arm, -49.393056, leds).withTimeout(Constants.Arm.commandTimeout),
-                new MoveWrist(wrist, 0.944286, leds).withTimeout(Constants.Wrist.commandTimeout));
+                new MoveWrist(wrist, 1.021737, leds).withTimeout(Constants.Wrist.commandTimeout));
     }
 }

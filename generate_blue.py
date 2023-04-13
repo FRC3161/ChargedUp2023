@@ -11,25 +11,25 @@ def generate_red_aliance(file_name: str, directory: str):
 
     path_file = open(f"{directory}/{file_name}", 'r', encoding="utf-8")
     new_path_file = open(
-        f"{directory}/{file_name.split('.')[0]}_red.path", "w", encoding="utf-8")
+        f"{directory}/2056_Link.path", "w", encoding="utf-8")
 
     path_data = json.loads(path_file.read())
 
     for waypoint in path_data["waypoints"]:
-        waypoint["anchorPoint"]["x"] = FIELD_LENGTH - \
-            waypoint["anchorPoint"]["x"]
-        if 180 - waypoint["holonomicAngle"] == 0:
-            waypoint["holonomicAngle"] = -0.01
+        waypoint["anchorPoint"]["x"] = FIELD_LENGTH - waypoint["anchorPoint"]["x"] 
+            
+        if waypoint["holonomicAngle"] - 180 == -180.1:
+            waypoint["holonomicAngle"] = 180
         else:
-            waypoint["holonomicAngle"] = 180 - waypoint["holonomicAngle"]
+            waypoint["holonomicAngle"] = 180 - waypoint["holonomicAngle"]  
 
         if waypoint["nextControl"] != None:
-            waypoint["nextControl"]["x"] = FIELD_LENGTH - \
-                waypoint["nextControl"]["x"]
+            waypoint["nextControl"]["x"] = FIELD_LENGTH - waypoint["nextControl"]["x"]
+                
 
         if waypoint["prevControl"] != None:
-            waypoint["prevControl"]["x"] = FIELD_LENGTH - \
-                waypoint["prevControl"]["x"]
+            waypoint["prevControl"]["x"] = FIELD_LENGTH - waypoint["prevControl"]["x"]  
+                
 
         waypoints.append(waypoint)
 
@@ -40,4 +40,4 @@ def generate_red_aliance(file_name: str, directory: str):
     new_path_file.close()
 
 
-generate_red_aliance("cableside.path", DIRECTORY)
+generate_red_aliance("2056_Link_red.path", DIRECTORY)

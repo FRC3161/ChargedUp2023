@@ -91,7 +91,7 @@ public final class Constants {
     public static final double gearRatio = 56; // 56:1
 
     public static final double maxAngle = Units.degreesToRadians(60);
-    public static final double minAngle = Units.degreesToRadians(-54.3);
+    public static final double minAngle = Units.degreesToRadians(-58.3);
 
     public static final double commandTimeout = 1.5;
   }
@@ -101,6 +101,8 @@ public final class Constants {
     public static final int wristMotorID = 33;
 
     public static final PIDConstants wristRotationPID = new PIDConstants(0.7, 0.6, 0.0005, Units.degreesToRadians(10));
+    // public static final PIDConstants wristRotationPID = new PIDConstants(0.7,
+    // 0.6, 0.0005, Units.degreesToRadians(10));
     public static final double wristGearRatio = 67.2;
 
     public static final double intakePower = 0.5;
@@ -116,9 +118,9 @@ public final class Constants {
     public static final double outakeCubeL3 = -0.6;
 
     public static final int absoluteEncoderPort = 1;
-    public static final double positionOffset = 1.752436;
+    public static final double positionOffset = 4.96 + 0.035;
 
-    public static final double maxAngle = 3.083457;
+    public static final double maxAngle = 3.18;
     public static final double minAngle = -1.664522;
 
     public static final int beambreakDIO = 2;

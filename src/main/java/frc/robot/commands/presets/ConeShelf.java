@@ -10,7 +10,7 @@ import frc.robot.subsystems.Wrist;
 
 public class ConeShelf extends ParallelCommandGroup {
     public ConeShelf(Arm arm, Wrist wrist, LEDs leds) {
-        addCommands(new MoveArm(arm, 51.108, leds).withTimeout(Constants.Arm.commandTimeout),
-                new MoveWrist(wrist, -1.188161, leds).withTimeout(Constants.Wrist.commandTimeout));
+        addCommands(new MoveArm(arm, 54.9, leds).withTimeout(Constants.Arm.commandTimeout),
+                new MoveWrist(wrist, -1.176748, leds).withTimeout(Constants.Wrist.commandTimeout));
     }
 }
