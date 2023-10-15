@@ -71,7 +71,7 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final TrapezoidProfile.Constraints armConstraints = new TrapezoidProfile.Constraints(1, 0.7);
+    public static final TrapezoidProfile.Constraints armConstraints = new TrapezoidProfile.Constraints(2, 3);
 
     public static final int leaderMotorID = 31;
     public static final int followerMotorID = 32;
@@ -82,9 +82,8 @@ public final class Constants {
     // arm is
     // parallel
     // to the ground.
-    public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.1, 0, 0); // until we have some empirical
-    // measurement, kS will be added
-    public static final PIDConstants armPID = new PIDConstants(1, 0, 0.05, 0);
+    public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.1, 0);
+    public static final double[] armPID = { 0, 0, 0 };
     public static final double armMaxOutput = 0.8;
     public static final double kMaxVelocityRadPerSecond = 0.3;
     public static final double kMaxAccelerationRadPerSecSquared = 0.1;
@@ -101,14 +100,13 @@ public final class Constants {
 
   public static final class Wrist {
 
-    public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(3, 2);
+    public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(3, 5);
 
     public static final int intakeMotorID = 9;
     public static final int wristMotorID = 33;
 
-    public static final PIDConstants wristRotationPID = new PIDConstants(0.7, 0.6, 0.0005, Units.degreesToRadians(10));
-    // public static final PIDConstants wristRotationPID = new PIDConstants(0.7,
-    // 0.6, 0.0005, Units.degreesToRadians(10));
+    public static final ArmFeedforward wristRotationFF = new ArmFeedforward(0, 0, 0);
+    public static final double[] wristRotationPID = { 0, 0, 0 };
     public static final double wristGearRatio = 67.2;
 
     public static final double intakePower = 0.5;

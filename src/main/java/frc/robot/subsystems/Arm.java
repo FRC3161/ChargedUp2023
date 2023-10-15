@@ -13,24 +13,19 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.PIDConstants;
 import frc.lib.util.ProfiledPIDConstants;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-public class Arm extends SubsystemBase {
-  // Motion control
-  private TrapezoidProfile m_motionProfile = new TrapezoidProfile(
-      Constants.Arm.armConstraints, new State(0, 0));
-  private State m_setpoint = new State();
-  private double m_currentPosition = 0;
-  private State m_goal = new State();
-  private Timer m_motionTimer = new Timer();
+public class Arm extends ProfiledPIDSubsystem {
 
   // Motors
   private final CANSparkMax armLeader = new CANSparkMax(Constants.Arm.leaderMotorID, MotorType.kBrushless);
@@ -40,10 +35,17 @@ public class Arm extends SubsystemBase {
   private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(Constants.Arm.encoderDIOPort);
 
   // Motion Control
-  private final PIDConstants armPidConstants = Constants.Arm.armPID;
-  private PIDController armRotationPID = Constants.Arm.armPID.getController();
+  private PIDController armRotationPID = new PIDController(Constants.Arm.armPID[0], Constants.Arm.armPID[1],
+      Constants.Arm.armPID[2]);
 
   public Arm() {
+
+    super(
+        new ProfiledPIDController(Constants.Arm.armPID[0], Constants.Arm.armPID[1],
+            Constants.Arm.armPID[2], Constants.Arm.armConstraints));
+    enable();
+    addChild("Arm PID", m_controller);
+
     /* Motors setup */
 
     // Arm leader
@@ -62,15 +64,12 @@ public class Arm extends SubsystemBase {
     /* End Motors setup */
 
     // Encoder
-    this.m_currentPosition = this.getEncoderPositionWithOffset();
-    updateTrapezoidProfile(new State(m_currentPosition, 0));
+    setGoal(this.getEncoderPositionWithOffset());
 
     // PID
     SmartDashboard.putNumber("Arm rotation setpoint", 0);
     SmartDashboard.putNumber("Arm rotation encoder", 0);
     SmartDashboard.putString("arm limit", "none");
-
-    this.armPidConstants.sendDashboard("arm pid");
   }
 
   public double getEncoderPosition() {
@@ -79,7 +78,7 @@ public class Arm extends SubsystemBase {
 
   public double getEncoderPositionWithOffset() {
     if (Robot.isSimulation()) {
-      return m_setpoint.position;
+      return this.m_controller.getSetpoint().position;
     }
 
     double encoderValue = this.getEncoderPosition() - Constants.Arm.encoderOffset;
@@ -88,25 +87,17 @@ public class Arm extends SubsystemBase {
     return ((encoderValue + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
 
-  private void updateTrapezoidProfile(State goal) {
-    m_goal = goal;
-    m_motionProfile = new TrapezoidProfile(Constants.Arm.armConstraints, goal,
-        new State(m_currentPosition, m_setpoint.velocity));
-    m_motionTimer = new Timer();
-    m_motionTimer.start();
-  }
-
   /**
    * @param angle in degrees PLS
    */
   public void setArmSetpoint(double angle) {
     angle = Units.degreesToRadians(angle);
     if (angle > Constants.Arm.maxAngle) {
-      updateTrapezoidProfile(new State(Constants.Arm.maxAngle, 0));
+      setGoal(Constants.Arm.maxAngle);
     } else if (angle < Constants.Arm.minAngle) {
-      updateTrapezoidProfile(new State(Constants.Arm.minAngle, 0));
+      setGoal(Constants.Arm.minAngle);
     } else {
-      updateTrapezoidProfile(new State(angle, 0));
+      setGoal(angle);
     }
   }
 
@@ -121,43 +112,32 @@ public class Arm extends SubsystemBase {
       angle = Constants.Arm.minAngle;
     }
 
-    m_goal = new State(angle, 0);
-    m_motionProfile = new TrapezoidProfile(Constants.Arm.armConstraints, m_goal, m_goal);
-    m_motionTimer = new Timer();
-    m_motionTimer.start();
+    setGoal(angle);
   }
 
   public boolean atSetpoint() {
-    return m_currentPosition > m_goal.position + Units.degreesToRadians(-5)
-        && m_currentPosition < m_goal.position + Units.degreesToRadians(5);
-  }
-
-  public double handleMovement() {
-    double pidOutput;
-    m_setpoint = m_motionProfile.calculate(m_motionTimer.get());
-    // this.armPidConstants.retrieveDashboard(this.armRotationPID);
-
-    pidOutput = MathUtil.clamp(this.armRotationPID
-        .calculate(this.getEncoderPositionWithOffset(), m_setpoint.position), -1, 1);
-
-    return pidOutput;
-  }
-
-  public double handleFF() {
-    return Constants.Arm.armFF.calculate(m_setpoint.position, m_setpoint.velocity);
+    return this.m_controller.atGoal();
   }
 
   @Override
-  public void periodic() {
-    this.m_currentPosition = this.getEncoderPositionWithOffset();
-    double pidOutput = this.handleMovement();
-    double ffOutput = this.handleFF();
-    this.armLeader.set(pidOutput);
-    SmartDashboard.putNumber("Arm pid", pidOutput);
-    SmartDashboard.putNumber("Arm ff", ffOutput);
-    SmartDashboard.putNumber("Arm goal", m_goal.position);
-    SmartDashboard.putNumber("Arm setpoint", m_setpoint.position);
-    SmartDashboard.putNumber("Arm current position", m_currentPosition);
-
+  public double getMeasurement() {
+    return this.getEncoderPositionWithOffset();
   }
+
+  public double handleFF(State setpoint) {
+    return Constants.Arm.armFF.calculate(setpoint.position,
+        setpoint.velocity);
+  }
+
+  @Override
+  protected void useOutput(double output, State setpoint) {
+    double ffOutput = this.handleFF(setpoint);
+
+    this.armLeader.set(output + ffOutput);
+
+    SmartDashboard.putNumber("Arm PID Output", output);
+    SmartDashboard.putNumber("Arm FF Output", ffOutput);
+    SmartDashboard.putNumber("Arm Total Output", ffOutput + output);
+  }
+
 }
