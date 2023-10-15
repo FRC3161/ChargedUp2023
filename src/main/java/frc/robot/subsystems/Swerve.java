@@ -100,6 +100,7 @@ public class Swerve extends SubsystemBase {
           this.robotRotationPID.calculate(getYaw().getDegrees() % 360,
               this.orientationWhenReleased.getDegrees() % 360),
           -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);
+      missalignment = 0;
     }
 
     SmartDashboard.putNumber("Missalignment speed PID", missalignment);

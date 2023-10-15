@@ -30,13 +30,15 @@ public class ArmManualControl extends CommandBase {
     // Arm
     double armY = -MathUtil.applyDeadband(this.armYSupplier.getAsDouble(), Constants.Swerve.stickDeadband);
     double armChange = (armY * maximumDisplacement) / 50;
+    // HAVE TO FIX THIS
     if (armY != 0)
-      this.arm.setArmSetpoint(Units.radiansToDegrees(this.arm.armSetpoint) + armChange);
+      this.arm.overrideMotion(Units.radiansToDegrees(this.arm.getEncoderPositionWithOffset()) + armChange);
 
     // Wrist
     double wristY = -MathUtil.applyDeadband(this.wristYSupplier.getAsDouble(), Constants.Swerve.stickDeadband);
     double wristChange = (wristY * 80) / 50;
 
-    this.wrist.setWristSetpoint(this.wrist.getWristSetpoint() + Units.degreesToRadians(wristChange));
+    if (wristY != 0)
+      this.wrist.overrideMotion(this.wrist.getWristSetpoint() + Units.degreesToRadians(wristChange));
   }
 }

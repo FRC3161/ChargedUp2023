@@ -71,15 +71,18 @@ public final class Constants {
   }
 
   public static final class Arm {
+    public static final TrapezoidProfile.Constraints armConstraints = new TrapezoidProfile.Constraints(1, 0.7);
+
     public static final int leaderMotorID = 31;
     public static final int followerMotorID = 32;
     public static final int encoderDIOPort = 0;
-    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2 + 6.6 + 5.3); // En`coder reading when
-                                                                                               // the
+    public static final double encoderOffset = Units.degreesToRadians(83.6 + 6.2 + 6.6 + 5.3 + 7); // En`coder reading
+                                                                                                   // when
+    // the
     // arm is
     // parallel
     // to the ground.
-    public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.92, 1.09, 0.04); // until we have some empirical
+    public static final ArmFeedforward armFF = new ArmFeedforward(0, 0.1, 0, 0); // until we have some empirical
     // measurement, kS will be added
     public static final PIDConstants armPID = new PIDConstants(1, 0, 0.05, 0);
     public static final double armMaxOutput = 0.8;
@@ -97,6 +100,9 @@ public final class Constants {
   }
 
   public static final class Wrist {
+
+    public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(3, 2);
+
     public static final int intakeMotorID = 9;
     public static final int wristMotorID = 33;
 
@@ -181,8 +187,8 @@ public final class Constants {
     public static final double angleConversionFactor = 360.0 / angleGearRatio;
 
     /* Swerve Profiling Values */
-    public static final double maxSpeed = 6; // meters per second
-    public static final double maxAngularVelocity = 11.5;
+    public static final double maxSpeed = 0.8; // meters per second
+    public static final double maxAngularVelocity = 1.5;
 
     /* Neutral Modes */
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;

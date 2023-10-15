@@ -27,6 +27,7 @@ import frc.robot.Constants.PieceType;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.leds.Blink;
+import frc.robot.commands.leds.SetColor;
 import frc.robot.commands.presets.ConeHP;
 import frc.robot.commands.presets.ConeL1;
 import frc.robot.commands.presets.ConeL2;

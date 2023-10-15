@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -21,10 +23,19 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.PIDConstants;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.GamePieceLevel;
 import frc.robot.Constants.PieceType;
 
 public class Wrist extends SubsystemBase {
+
+  // Motion profile
+  private TrapezoidProfile m_motionProfile = new TrapezoidProfile(
+      Constants.Arm.armConstraints, new State(0, 0));
+  private State m_setpoint = new State();
+  private double m_currentPosition = 0;
+  private State m_goal = new State();
+  private Timer m_motionTimer = new Timer();
 
   // Motors
   private final CANSparkMax wristMotor = new CANSparkMax(Constants.Wrist.wristMotorID, MotorType.kBrushless);
@@ -42,7 +53,6 @@ public class Wrist extends SubsystemBase {
   private final PIDController wristRotationPID = Constants.Wrist.wristRotationPID.getController();
   private final PIDConstants intakePIDConstants = Constants.Wrist.intakePIDConstants;
   private final PIDController intakePIDController = Constants.Wrist.intakePIDConstants.getController();
-  private double wristSetPoint = 0;
   private double intakeSetVelocity = 0;
   public boolean isCorrecting = false;
 
@@ -188,27 +198,54 @@ public class Wrist extends SubsystemBase {
 
   }
 
+  private void updateTrapezoidProfile(double angle) {
+    m_goal = new State(angle, 0);
+    m_motionProfile = new TrapezoidProfile(Constants.Wrist.constraints, m_goal,
+        new State(m_currentPosition, m_setpoint.velocity));
+    m_motionTimer = new Timer();
+    m_motionTimer.start();
+
+  }
+
   /**
    * 
    * @param angle pls in radians
    */
   public void setWristSetpoint(double angle) {
-    this.wristSetPoint = angle;
-    if (this.wristSetPoint > Constants.Wrist.maxAngle) {
-      this.wristSetPoint = Constants.Wrist.maxAngle;
-    } else if (wristSetPoint < Constants.Wrist.minAngle) {
-      this.wristSetPoint = Constants.Wrist.minAngle;
+    if (angle > Constants.Wrist.maxAngle) {
+      this.updateTrapezoidProfile(Constants.Wrist.maxAngle);
+    } else if (angle < Constants.Wrist.minAngle) {
+      this.updateTrapezoidProfile(Constants.Wrist.minAngle);
+    } else {
+      this.updateTrapezoidProfile(angle);
     }
-    this.handleMovement();
+  }
+
+  /**
+   * @param angle in radians
+   */
+  public void overrideMotion(double angle) {
+    if (angle > Constants.Wrist.maxAngle) {
+      angle = Constants.Wrist.maxAngle;
+    } else if (angle < Constants.Wrist.minAngle) {
+      this.updateTrapezoidProfile(Constants.Wrist.minAngle);
+      angle = Constants.Wrist.minAngle;
+    }
+
+    m_goal = new State(angle, 0);
+    m_motionProfile = new TrapezoidProfile(Constants.Wrist.constraints, m_goal, m_goal);
+    m_motionTimer = new Timer();
+    m_motionTimer.start();
+
   }
 
   public boolean atSetpoint() {
-    return this.getEncoderPosition() > this.wristSetPoint + Units.degreesToRadians(-20)
-        && this.getEncoderPosition() < this.wristSetPoint + Units.degreesToRadians(20);
+    return m_currentPosition > m_goal.position + Units.degreesToRadians(-20)
+        && m_currentPosition < m_goal.position + Units.degreesToRadians(20);
   }
 
   public double getWristSetpoint() {
-    return this.wristSetPoint;
+    return m_setpoint.position;
   }
 
   public double getEncoderPosition() {
@@ -216,6 +253,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getAbsoluteEncoder() {
+    if (Robot.isSimulation()) {
+      return m_setpoint.position;
+    }
+
     return Units.degreesToRadians(wristEncoder.getPosition());
 
     // double encoderValue = gooseEncoderValue - Constants.Wrist.positionOffset;
@@ -233,22 +274,9 @@ public class Wrist extends SubsystemBase {
   }
 
   public double handleMovement() {
-    if (this.wristSetPoint > Constants.Wrist.maxAngle) {
-      this.wristSetPoint = Constants.Wrist.maxAngle;
-    } else if (wristSetPoint < Constants.Wrist.minAngle) {
-      this.wristSetPoint = Constants.Wrist.minAngle;
-    }
     double power = 0;
-    double encoderValue = this.getAbsoluteEncoder();
-    if (Math.abs(encoderValue - this.wristSetPoint) <= Units.degreesToRadians(10)
-        && isCorrecting) {
-      power = this.wristRotationPID.calculate(encoderValue,
-          this.wristSetPoint);
-    } else {
-      PIDController wristP = this.wristRotationPidConstants.getControllerP();
-      power = wristP.calculate(encoderValue, this.wristSetPoint);
-    }
-
+    power = this.wristRotationPID.calculate(m_currentPosition,
+        m_setpoint.position);
     return power;
   }
 
@@ -283,20 +311,25 @@ public class Wrist extends SubsystemBase {
     // this.wristEncoder.setPosition(Units.radiansToDegrees(getAbsoluteEncoder()));
     // this.wristSetPoint = getAbsoluteEncoder();
     this.wristEncoder.setPosition(Units.radiansToDegrees(3.0573));
-    this.wristSetPoint = 3.0573;
+    this.setWristSetpoint(3.0573);
   }
 
   @Override
   public void periodic() {
     this.getGooseEncoder();
+    m_currentPosition = this.getAbsoluteEncoder();
 
-    double power = MathUtil.clamp(this.handleMovement(), -0.7, 0.7);
+    m_setpoint = m_motionProfile.calculate(m_motionTimer.get());
+
+    double power = MathUtil.clamp(this.handleMovement(), -1, 1);
     // if (Math.abs(this.getAbsoluteEncoder()) > 4) { // reading is out of range
     // this.wristMotor.set(0);
     // this.wristMotor.disable();
     // } else {
     // }
+
     this.wristMotor.set(power);
+
     // intakeSetVelocity = SmartDashboard.getNumber("set velocity",
     // intakeSetVelocity);
     // double intakePower =
@@ -308,16 +341,24 @@ public class Wrist extends SubsystemBase {
 
     // this.intakeMotor.set(ControlMode.PercentOutput, intakePower);
 
-    SmartDashboard.putNumber("Wrist setpoint", this.wristSetPoint);
-    SmartDashboard.putNumber("Wrist relative encoder", this.getEncoderPosition());
-    SmartDashboard.putNumber("Wrist pid output", power);
-    SmartDashboard.putBoolean("wrist end", this.atSetpoint());
-    SmartDashboard.putBoolean("beambreak", this.breambreak.get());
-    SmartDashboard.putNumber("wrist absolute error", this.getAbsoluteEncoder() - this.wristSetPoint);
-    SmartDashboard.putNumber("Wrist absolute encoder", this.getAbsoluteEncoder());
-    SmartDashboard.putNumber("raw value absolute", this.absoluteEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("goose absolute encoder", this.gooseEncoderValue);
-    SmartDashboard.putNumber("goose rollover", this.gooseEncoderRollover);
+    SmartDashboard.putNumber("Wrist Goal", this.m_goal.position);
+    SmartDashboard.putNumber("Wrist setpoint", this.m_setpoint.position);
+    SmartDashboard.putNumber("Wrist current position", this.m_currentPosition);
+
+    // SmartDashboard.putNumber("Wrist setpoint", this.m_setpoint.position);
+    // SmartDashboard.putNumber("Wrist relative encoder",
+    // this.getEncoderPosition());
+    // SmartDashboard.putNumber("Wrist pid output", power);
+    // SmartDashboard.putBoolean("wrist end", this.atSetpoint());
+    // SmartDashboard.putBoolean("beambreak", this.breambreak.get());
+    // SmartDashboard.putNumber("wrist absolute error", this.getAbsoluteEncoder() -
+    // this.m_setpoint.position);
+    // SmartDashboard.putNumber("Wrist absolute encoder",
+    // this.getAbsoluteEncoder());
+    // SmartDashboard.putNumber("raw value absolute",
+    // this.absoluteEncoder.getAbsolutePosition());
+    // SmartDashboard.putNumber("goose absolute encoder", this.gooseEncoderValue);
+    // SmartDashboard.putNumber("goose rollover", this.gooseEncoderRollover);
 
     this.previousAbsoluteEncoder = this.absoluteEncoder.getAbsolutePosition();
 
