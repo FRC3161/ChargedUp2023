@@ -1,0 +1,57 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "DutyCycleEncoder[0]": {
+        "header": {
+          "open": true
+        }
+      },
+      "DutyCycleEncoder[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "REV Color Sensor V3[0,82]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Go to Position": "Command",
+      "/SmartDashboard/Go to home": "Command",
+      "/SmartDashboard/Reset Pose Estimator": "Command",
+      "/SmartDashboard/autos": "String Chooser",
+      "/SmartDashboard/l2 cone": "Command",
+      "/SmartDashboard/l3 cone": "Command",
+      "/SmartDashboard/send values": "Command",
+      "/SmartDashboard/sync wrist": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      },
+      "photonvision": {
+        "open": true
+      }
+    }
+  }
+}
